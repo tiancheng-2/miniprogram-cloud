@@ -17,13 +17,9 @@
       <view wx:if="{{restaurantName}}" class="dish-restaurant">{{restaurantName}}</view>
     </view>
 
-    <!-- 菜品照片展示 -->
-    <view wx:if="{{photos.length > 0}}" class="photo-section">
-      <swiper class="photo-swiper" indicator-dots="{{photos.length > 1}}" indicator-color="rgba(203, 213, 225, 0.4)" indicator-active-color="#CBD5E1">
-        <swiper-item wx:for="{{photos}}" wx:key="index">
-          <image class="photo-image" src="{{item}}" mode="aspectFill" bindtap="viewPhoto" data-index="{{index}}"></image>
-        </swiper-item>
-      </swiper>
+    <!-- 菜品照片展示 - 修复：使用 photoUrl 而不是 photos -->
+    <view wx:if="{{photoUrl}}" class="photo-section">
+      <image class="photo-image" src="{{photoUrl}}" mode="aspectFill" bindtap="onPreviewPhoto"></image>
     </view>
 
     <!-- 菜品笔记 -->
@@ -51,96 +47,97 @@
 
   <!-- 编辑模式 -->
   <view wx:else class="edit-mode">
-  <view class="edit-title">编辑菜品</view>
+    <view class="edit-title">编辑菜品</view>
 
-  <!-- 编辑表单 -->
-  <view class="edit-form">
-    <!-- 菜品名称 -->
-    <view class="edit-item">
-      <view class="edit-label">
-        菜品名称
-        <text class="char-count">{{editingName.length}}/20</text>
-      </view>
-      <input 
-        class="edit-input" 
-        placeholder="菜品名称" 
-        value="{{editingName}}" 
-        bindinput="onEditNameInput"
-        maxlength="20"
-      />
-    </view>
-
-    <!-- 属性选择 -->
-    <view class="edit-item">
-      <view class="edit-label">属性</view>
-      <view class="rating-buttons">
-        <view class="rating-btn {{editingRating === 'must-try' ? 'active' : ''}}" bindtap="onEditRatingChange" data-rating="must-try">
-          <text class="rating-btn-text">👍 必点</text>
+    <!-- 编辑表单 -->
+    <view class="edit-form">
+      <!-- 菜品名称 -->
+      <view class="edit-item">
+        <view class="edit-label">
+          菜品名称
+          <text class="char-count">{{editingName.length}}/20</text>
         </view>
-        <view class="rating-btn {{editingRating === 'avoid' ? 'active' : ''}}" bindtap="onEditRatingChange" data-rating="avoid">
-          <text class="rating-btn-text">⚠️ 避坑</text>
-        </view>
+        <input 
+          class="edit-input" 
+          placeholder="菜品名称" 
+          value="{{editingName}}" 
+          bindinput="onEditNameInput"
+          maxlength="20"
+        />
       </view>
-    </view>
 
-    <!-- 菜品笔记 -->
-    <view class="edit-item">
-      <view class="edit-label">
-        菜品笔记（可选）
-        <text class="char-count">{{editingNote.length}}/25</text>
-      </view>
-      <textarea 
-        class="edit-textarea" 
-        placeholder="记录一下这道菜..." 
-        value="{{editingNote}}" 
-        bindinput="onEditNoteInput"
-        maxlength="25"
-        auto-height
-      />
-    </view>
-
-    <!-- 标签编辑 -->
-    <view class="edit-item">
-      <view class="edit-label">
-        标签（可选，用空格分隔）
-        <text class="char-count">{{editingTagsInput.length}}/30</text>
-      </view>
-      <input 
-        class="edit-input" 
-        placeholder="例如: 辣 川菜 招牌" 
-        value="{{editingTagsInput}}" 
-        bindinput="onEditTagsInput"
-        maxlength="30"
-      />
-    </view>
-<!-- 菜品照片上传 - 新增 -->
-<view class="edit-item">
-      <view class="edit-label">菜品照片（可选）</view>
-      
-      <!-- 已上传照片预览 -->
-      <view wx:if="{{editingPhotoUrl}}" class="photo-preview">
-        <image class="photo-image" src="{{editingPhotoUrl}}" mode="aspectFill"></image>
-        <view class="photo-delete" bindtap="onDeleteEditPhoto">
-          <text class="delete-icon">✕</text>
+      <!-- 属性选择 -->
+      <view class="edit-item">
+        <view class="edit-label">属性</view>
+        <view class="rating-buttons">
+          <view class="rating-btn must {{editingRating === 'must-try' ? 'active' : ''}}" bindtap="onEditRatingChange" data-rating="must-try">
+            <text class="rating-btn-text">👍 必点</text>
+          </view>
+          <view class="rating-btn avoid {{editingRating === 'avoid' ? 'active' : ''}}" bindtap="onEditRatingChange" data-rating="avoid">
+            <text class="rating-btn-text">⚠️ 避坑</text>
+          </view>
         </view>
       </view>
-      
-      <!-- 上传按钮 -->
-      <view wx:else class="photo-upload" bindtap="onChooseEditImage">
-        <text class="upload-icon">📷</text>
-        <text class="upload-text">添加照片</text>
-      </view>
-    </view>
-  </view>    
 
-  <!-- 操作按钮 -->
-  <view class="action-buttons">
-    <view class="action-btn cancel-btn" bindtap="onCancel">
-      <text class="action-btn-text">取消</text>
-    </view>
-    <view class="action-btn save-btn" bindtap="onSave">
-      <text class="action-btn-text">保存</text>
+      <!-- 菜品笔记 -->
+      <view class="edit-item">
+        <view class="edit-label">
+          菜品笔记（可选）
+          <text class="char-count">{{editingNote.length}}/25</text>
+        </view>
+        <textarea 
+          class="edit-textarea" 
+          placeholder="记录一下这道菜..." 
+          value="{{editingNote}}" 
+          bindinput="onEditNoteInput"
+          maxlength="25"
+          auto-height
+        />
+      </view>
+
+      <!-- 标签编辑 -->
+      <view class="edit-item">
+        <view class="edit-label">
+          标签（可选，用空格分隔）
+          <text class="char-count">{{editingTagsInput.length}}/30</text>
+        </view>
+        <input 
+          class="edit-input" 
+          placeholder="例如: 辣 川菜 招牌" 
+          value="{{editingTagsInput}}" 
+          bindinput="onEditTagsInput"
+          maxlength="30"
+        />
+      </view>
+
+      <!-- 菜品照片上传 -->
+      <view class="edit-item">
+        <view class="edit-label">菜品照片（可选）</view>
+        
+        <!-- 已上传照片预览 -->
+        <view wx:if="{{editingPhotoUrl}}" class="photo-preview">
+          <image class="photo-image" src="{{editingPhotoUrl}}" mode="aspectFill" bindtap="onPreviewEditPhoto"></image>
+          <view class="photo-delete" bindtap="onDeleteEditPhoto" catchtap>
+            <text class="delete-icon">✕</text>
+          </view>
+        </view>
+        
+        <!-- 上传按钮 -->
+        <view wx:else class="photo-upload" bindtap="onChooseEditImage">
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">添加照片</text>
+        </view>
+      </view>
+    </view>    
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <view class="action-btn cancel-btn" bindtap="onCancelEdit">
+        <text class="action-btn-text">取消</text>
+      </view>
+      <view class="action-btn save-btn" bindtap="onSaveEdit">
+        <text class="action-btn-text">保存</text>
+      </view>
     </view>
   </view>
 </view>
-</view> 

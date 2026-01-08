@@ -6,16 +6,8 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力');
     } else {
       wx.cloud.init({
-<<<<<<< HEAD
-<<<<<<< HEAD
         // TODO: 请替换为您的云开发环境ID
         env: 'cloud1-7gvrjj1p6b9df8ee',
-=======
-        env: 'cloud1-7gv阿达阿达是的1水电费水电费水电费fe',
->>>>>>> d55432a5c2bdeda1ce3fd51ee14be57d4ec85d42
-=======
-        env: 'cloud1-7gv阿达阿达是的1水电费水电费水电费fe',
->>>>>>> d55432a5c2bdeda1ce3fd51ee14be57d4ec85d42
         traceUser: true,
       });
     }

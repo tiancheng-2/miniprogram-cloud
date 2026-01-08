@@ -1,15 +1,14 @@
-// pages/restaurant/restaurant.js
+// pages/restaurant/restaurant.js - 添加分享功能
 
 Page({
   data: {
     restaurantId: '',
     restaurantName: '',
     restaurantAddress: '',
-    restaurantTags: [],  // 🆕 新增：餐厅标签
+    restaurantTags: [],
     currentFilter: 'all',
     mustTryDishes: [],
     avoidDishes: [],
-    
   },
 
   onLoad(options) {
@@ -36,7 +35,6 @@ Page({
     this.loadDishes();
   },
 
-  // 🔄 修改：加载餐厅标签
   loadRestaurantDetail() {
     const db = wx.cloud.database();
     db.collection('restaurants')
@@ -45,7 +43,7 @@ Page({
       .then(res => {
         this.setData({
           restaurantAddress: res.data.address || '',
-          restaurantTags: res.data.tags || []  // 🆕 新增
+          restaurantTags: res.data.tags || []
         });
       })
       .catch(err => {
@@ -125,5 +123,16 @@ Page({
     if (this.data.restaurantId) {
       this.loadDishes();
     }
+  },
+
+  /**
+   * 分享功能 - 跳转到海报页
+   */
+  onShareAppMessage() {
+    return {
+      title: `推荐${this.data.restaurantName}，这些菜必点！`,
+      path: `/pages/share-poster/share-poster?id=${this.data.restaurantId}`,
+      imageUrl: '' // 使用页面截图
+    };
   }
 });

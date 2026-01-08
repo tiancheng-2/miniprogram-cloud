@@ -6,7 +6,8 @@
     "pages/restaurant/restaurant",
     "pages/dish/dish",
     "pages/search/search",
-    "pages/add-dishes/add-dishes"
+    "pages/add-dishes/add-dishes",
+    "pages/share-poster/share-poster"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -15,12 +16,7 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#F8FAFC"
   },
-
-"usingComponents": {
-  "share-canvas": "/components/share-canvas/share-canvas"
-},
-
-  "lazyCodeLoading": "requiredComponents", 
+  "lazyCodeLoading": "requiredComponents",
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "cloud": true

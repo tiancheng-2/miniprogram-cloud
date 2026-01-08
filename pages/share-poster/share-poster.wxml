@@ -1,0 +1,35 @@
+<!--pages/share-poster/share-poster.wxml - 分享海报页-->
+<view class="poster-container">
+  <!-- 顶部：餐厅名 -->
+  <view class="restaurant-name">{{restaurantName}}</view>
+  
+  <!-- 推荐语 -->
+  <view class="recommendation">这家店有必点菜，帮你试过了</view>
+  
+  <!-- 必点菜品区域 -->
+  <view wx:if="{{mustTryDishes.length > 0}}" class="section must-try-section">
+    <view class="section-title">👍 必点推荐</view>
+    <view class="dish-list">
+      <view class="dish-item" wx:for="{{mustTryDishes}}" wx:key="index">
+        <text class="dish-name">{{item.dishName}}</text>
+        <text wx:if="{{item.note}}" class="dish-note">{{item.note}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 避坑菜品区域 -->
+  <view wx:if="{{avoidDishes.length > 0}}" class="section avoid-section">
+    <view class="section-title">⚠️ 不推荐</view>
+    <view class="dish-list">
+      <view class="dish-item" wx:for="{{avoidDishes}}" wx:key="index">
+        <text class="dish-name">{{item.dishName}}</text>
+        <text wx:if="{{item.note}}" class="dish-note">{{item.note}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部品牌 -->
+  <view class="brand">
+    <view class="brand-text">来自味觉空间</view>
+  </view>
+</view>
