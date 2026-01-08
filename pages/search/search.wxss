@@ -1,0 +1,97 @@
+/* pages/search/search.wxss - 搜索页（遵循视觉规范）*/
+
+.container {
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+  min-height: 100vh;
+}
+
+/* 搜索框 */
+.search-bar {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  padding: 20rpx 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease;
+}
+
+.search-input {
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  letter-spacing: 0.5rpx;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-sub);
+}
+
+/* 搜索结果区域 */
+.results-section {
+  margin-top: 24rpx;
+}
+
+/* 结果分组 */
+.result-group {
+  margin-bottom: 32rpx;
+}
+
+/* 结果标题 */
+.result-title {
+  font-size: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 16rpx;
+  letter-spacing: 0.5rpx;
+  padding-left: 8rpx;
+}
+
+/* 结果列表 */
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 结果项 */
+.result-item {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  padding: 24rpx;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease;
+}
+
+.result-item:active {
+  transform: scale(0.98);
+}
+
+.result-name {
+  font-size: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-main);
+  margin-bottom: 8rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.result-info {
+  font-size: var(--font-caption);
+  color: var(--color-text-sub);
+  letter-spacing: 0.5rpx;
+}
+
+/* 空状态 */
+.empty-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 240rpx 0;
+}
+
+.empty-text {
+  font-size: var(--font-body);
+  color: var(--color-text-sub);
+  text-align: center;
+}

@@ -1,0 +1,125 @@
+<!--pages/restaurant/restaurant.wxml - 完整版-->
+<view class="container">
+  <!-- 餐厅头部信息区 -->
+  <view class="restaurant-header">
+    <view class="restaurant-info">
+      <view class="restaurant-name">{{restaurantName}}</view>
+      <view class="restaurant-address">{{restaurantAddress}}</view>
+    </view>
+    <view class="header-actions">
+      <view class="edit-icon" bindtap="onEditRestaurant">✏︎</view>
+    </view>
+  </view>
+
+  <!-- 筛选标签 -->
+  <view wx:if="{{mustTryDishes.length > 0 || avoidDishes.length > 0}}" class="filter-tabs">
+    <view class="filter-tab {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="all">
+      <text class="filter-tab-text">全部</text>
+    </view>
+    <view class="filter-tab {{currentFilter === 'must-try' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="must-try">
+      <text class="filter-tab-text">👍 必点</text>
+    </view>
+    <view class="filter-tab {{currentFilter === 'avoid' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="avoid">
+      <text class="filter-tab-text">⚠️ 避坑</text>
+    </view>
+  </view>
+
+  <!-- 全部视图 -->
+  <view wx:if="{{currentFilter === 'all' && (mustTryDishes.length > 0 || avoidDishes.length > 0)}}" class="dish-list">
+    <!-- 必点菜品 -->
+    <block wx:for="{{mustTryDishes}}" wx:key="_id">
+      <view class="dish-card" bindtap="onViewDish" data-id="{{item._id}}" data-name="{{item.dishName}}" data-rating="{{item.rating}}" data-photo="{{item.photoUrl}}" data-note="{{item.note}}">
+        <view class="dish-image">
+          <image wx:if="{{item.photoUrl}}" class="dish-photo" src="{{item.photoUrl}}" mode="aspectFill"></image>
+          <view wx:else class="image-placeholder">{{item.dishChar}}</view>
+        </view>
+        <view class="dish-info">
+          <view class="dish-header">
+            <view class="dish-name">{{item.dishName}}</view>
+            <view class="dish-rating must">👍 必点</view>
+          </view>
+          <view wx:if="{{item.note}}" class="dish-note">{{item.note}}</view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="dish-tags">
+            <view class="dish-tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <!-- 避坑菜品 -->
+    <block wx:for="{{avoidDishes}}" wx:key="_id">
+      <view class="dish-card" bindtap="onViewDish" data-id="{{item._id}}" data-name="{{item.dishName}}" data-rating="{{item.rating}}" data-photo="{{item.photoUrl}}" data-note="{{item.note}}">
+        <view class="dish-image">
+          <image wx:if="{{item.photoUrl}}" class="dish-photo" src="{{item.photoUrl}}" mode="aspectFill"></image>
+          <view wx:else class="image-placeholder">{{item.dishChar}}</view>
+        </view>
+        <view class="dish-info">
+          <view class="dish-header">
+            <view class="dish-name">{{item.dishName}}</view>
+            <view class="dish-rating avoid">⚠️ 避坑</view>
+          </view>
+          <view wx:if="{{item.note}}" class="dish-note">{{item.note}}</view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="dish-tags">
+            <view class="dish-tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 必点视图 -->
+  <view wx:if="{{currentFilter === 'must-try'}}" class="dish-list">
+    <block wx:for="{{mustTryDishes}}" wx:key="_id">
+      <view class="dish-card" bindtap="onViewDish" data-id="{{item._id}}" data-name="{{item.dishName}}" data-rating="{{item.rating}}" data-photo="{{item.photoUrl}}" data-note="{{item.note}}">
+        <view class="dish-image">
+          <image wx:if="{{item.photoUrl}}" class="dish-photo" src="{{item.photoUrl}}" mode="aspectFill"></image>
+          <view wx:else class="image-placeholder">{{item.dishChar}}</view>
+        </view>
+        <view class="dish-info">
+          <view class="dish-header">
+            <view class="dish-name">{{item.dishName}}</view>
+            <view class="dish-rating must">👍 必点</view>
+          </view>
+          <view wx:if="{{item.note}}" class="dish-note">{{item.note}}</view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="dish-tags">
+            <view class="dish-tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{mustTryDishes.length === 0}}" class="view-empty">还没有必点菜品</view>
+  </view>
+
+  <!-- 避坑视图 -->
+  <view wx:if="{{currentFilter === 'avoid'}}" class="dish-list">
+    <block wx:for="{{avoidDishes}}" wx:key="_id">
+      <view class="dish-card" bindtap="onViewDish" data-id="{{item._id}}" data-name="{{item.dishName}}" data-rating="{{item.rating}}" data-photo="{{item.photoUrl}}" data-note="{{item.note}}">
+        <view class="dish-image">
+          <image wx:if="{{item.photoUrl}}" class="dish-photo" src="{{item.photoUrl}}" mode="aspectFill"></image>
+          <view wx:else class="image-placeholder">{{item.dishChar}}</view>
+        </view>
+        <view class="dish-info">
+          <view class="dish-header">
+            <view class="dish-name">{{item.dishName}}</view>
+            <view class="dish-rating avoid">⚠️ 避坑</view>
+          </view>
+          <view wx:if="{{item.note}}" class="dish-note">{{item.note}}</view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="dish-tags">
+            <view class="dish-tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{avoidDishes.length === 0}}" class="view-empty">还没有避坑菜品</view>
+  </view>
+
+  <!-- 无菜品提示 -->
+  <view wx:if="{{mustTryDishes.length === 0 && avoidDishes.length === 0}}" class="view-empty">
+    还没有记录菜品，点击下方按钮记下第一道吧
+  </view>
+
+  <!-- 新增按钮和返回按钮 -->
+  <view class="fixed-bottom-buttons">
+    <view class="back-button" bindtap="onBack">返回</view>
+    <view class="add-button" bindtap="goToAddDishes">新增菜品</view>
+  </view>
+</view>

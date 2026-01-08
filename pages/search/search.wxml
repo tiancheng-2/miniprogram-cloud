@@ -1,0 +1,69 @@
+<!--pages/search/search.wxml-->
+<view class="container">
+  <!-- 搜索框（自动聚焦）-->
+  <view class="search-bar">
+    <input 
+      class="search-input" 
+      placeholder="搜索餐厅或菜品" 
+      value="{{searchKeyword}}" 
+      bindinput="onSearchInput"
+      focus="{{true}}"
+      confirm-type="search"
+    />
+  </view>
+
+  <!-- 搜索结果 -->
+  <view wx:if="{{hasResults}}" class="results-section">
+    <!-- 餐厅结果 -->
+    <view wx:if="{{restaurantResults.length > 0}}" class="result-group">
+      <view class="result-title">餐厅</view>
+      <view class="result-list">
+        <view 
+          wx:for="{{restaurantResults}}" 
+          wx:key="id" 
+          class="result-item" 
+          bindtap="onSelectResult" 
+          data-type="restaurant" 
+          data-id="{{item.id}}"
+          data-name="{{item.name}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-info">{{item.address}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 菜品结果 -->
+    <view wx:if="{{dishResults.length > 0}}" class="result-group">
+      <view class="result-title">菜品</view>
+      <view class="result-list">
+        <view 
+          wx:for="{{dishResults}}" 
+          wx:key="id" 
+          class="result-item" 
+          bindtap="onSelectResult" 
+          data-type="dish" 
+          data-id="{{item.id}}"
+          data-name="{{item.name}}"
+          data-rating="{{item.rating}}"
+          data-photo="{{item.photoUrl}}"
+          data-note="{{item.note}}"
+          data-restaurant-id="{{item.restaurantId}}"
+          data-restaurant-name="{{item.restaurantName}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-info">{{item.restaurantName}} · {{item.rating === 'must-try' ? '👍 必点' : '⚠️ 避坑'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{searchKeyword.length > 0}}" class="empty-result">
+    <view class="empty-text">没有找到相关内容</view>
+  </view>
+
+  <view wx:else class="empty-result">
+    <view class="empty-text">输入关键词搜索餐厅或菜品</view>
+  </view>
+</view>

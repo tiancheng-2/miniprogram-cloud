@@ -1,0 +1,282 @@
+/* pages/add-restaurant/add-restaurant.wxss - 添加餐厅（遵循视觉规范）*/
+
+.container {
+  padding: 32rpx;
+  padding-bottom: 240rpx;
+  min-height: 100vh;
+}
+
+/* ===== 头部 ===== */
+.header {
+  margin-bottom: 32rpx;
+}
+
+.header-title {
+  font-size: var(--font-title);
+  font-weight: 600;
+  color: var(--color-text-main);
+  letter-spacing: 1rpx;
+  margin-bottom: 12rpx;
+}
+
+.header-subtitle {
+  font-size: var(--font-body);
+  font-weight: 400;
+  color: var(--color-text-sub);
+  letter-spacing: 0.5rpx;
+}
+
+/* ===== 表单卡片 ===== */
+.form-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  padding: 32rpx 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: var(--font-subtitle);
+  font-weight: 600;
+  color: var(--color-text-main);
+  letter-spacing: 0.5rpx;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F2F2F2;
+}
+
+/* ===== 表单项 ===== */
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+  font-size: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-main);
+  letter-spacing: 0.5rpx;
+}
+
+.char-count {
+  font-size: var(--font-caption);
+  font-weight: 400;
+  color: var(--color-text-sub);
+}
+
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FAFAFA;
+  border-radius: var(--radius-input);
+  padding: 20rpx;
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  min-height: 88rpx;
+  line-height: 1.5;
+  letter-spacing: 0.5rpx;
+}
+
+.form-input::placeholder {
+  color: var(--color-text-sub);
+  font-weight: 400;
+}
+
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FAFAFA;
+  border-radius: var(--radius-input);
+  padding: 20rpx;
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  min-height: 160rpx;
+  line-height: 1.6;
+  letter-spacing: 0.5rpx;
+}
+
+.form-textarea::placeholder {
+  color: var(--color-text-sub);
+  font-weight: 400;
+}
+
+/* ===== 评分按钮 ===== */
+.rating-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+}
+
+.rating-btn {
+  background: #FAFAFA;
+  border-radius: var(--radius-input);
+  padding: 24rpx 0;
+  font-size: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-sub);
+  text-align: center;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5rpx;
+}
+
+.rating-btn:active {
+  transform: scale(0.98);
+}
+
+.rating-btn.must.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.rating-btn.avoid.active {
+  background: #F2F2F2;
+  color: var(--color-text-normal);
+}
+
+/* ===== 菜品卡片 ===== */
+.dish-item {
+  background: #FAFAFA;
+  border-radius: var(--radius-card);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.dish-number {
+  font-size: var(--font-caption);
+  font-weight: 500;
+  color: var(--color-text-sub);
+  margin-bottom: 16rpx;
+  letter-spacing: 0.5rpx;
+}
+
+/* ===== 照片上传 ===== */
+.photo-preview {
+  position: relative;
+  width: 100%;
+  height: 400rpx;
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  background: #FAFAFA;
+}
+
+.photo-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.photo-delete {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.photo-delete:active {
+  transform: scale(0.9);
+}
+
+.delete-icon {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.photo-upload {
+  width: 100%;
+  height: 300rpx;
+  background: #FAFAFA;
+  border: 2rpx dashed #E0E0E0;
+  border-radius: var(--radius-input);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  transition: all 0.2s ease;
+}
+
+.photo-upload:active {
+  background: #F0F0F0;
+  border-color: #D0D0D0;
+}
+
+.upload-icon {
+  font-size: 64rpx;
+  line-height: 1;
+}
+
+.upload-text {
+  font-size: var(--font-body);
+  color: var(--color-text-sub);
+  font-weight: 400;
+  letter-spacing: 0.5rpx;
+}
+
+/* ===== 底部按钮区域 ===== */
+.bottom-placeholder {
+  height: 220rpx;
+}
+
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-bg-card);
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
+  z-index: 100;
+}
+
+.action-buttons {
+  max-width: 750rpx;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+}
+
+.action-btn {
+  border-radius: var(--radius-button);
+  padding: 24rpx 0;
+  font-size: var(--font-body);
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.cancel-btn {
+  background: #EFEFEF;
+  color: var(--color-text-normal);
+}
+
+.cancel-btn:active {
+  opacity: 0.8;
+}
+
+.save-btn {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.save-btn:active {
+  opacity: 0.8;
+}

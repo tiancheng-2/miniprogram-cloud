@@ -1,0 +1,222 @@
+/* pages/edit-restaurant/edit-restaurant.wxss - 编辑餐厅（遵循视觉规范）*/
+
+.container {
+  padding: 32rpx;
+  padding-bottom: 280rpx;
+  min-height: 100vh;
+}
+
+/* ===== 表单 ===== */
+.form {
+  margin-bottom: 48rpx;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  margin-bottom: 12rpx;
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-count {
+  font-size: var(--font-caption);
+  color: var(--color-text-sub);
+  font-weight: 400;
+}
+
+/* 输入框 */
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FAFAFA;
+  border-radius: var(--radius-input);
+  padding: 20rpx;
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  min-height: 88rpx;
+  line-height: 1.5;
+  letter-spacing: 0.5rpx;
+}
+
+.form-input::placeholder {
+  color: var(--color-text-sub);
+  font-weight: 400;
+}
+
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FAFAFA;
+  border-radius: var(--radius-input);
+  padding: 20rpx;
+  font-size: var(--font-body);
+  color: var(--color-text-main);
+  min-height: 88rpx;
+  line-height: 1.5;
+  letter-spacing: 0.5rpx;
+}
+
+.form-textarea::placeholder {
+  color: var(--color-text-sub);
+  font-weight: 400;
+}
+
+/* ===== 底部固定区域 ===== */
+.bottom-placeholder {
+  height: 260rpx;
+}
+
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: var(--color-bg-card);
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
+  z-index: 100;
+}
+
+/* 取消和保存按钮 */
+.action-buttons {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.action-btn {
+  flex: 1;
+  border-radius: var(--radius-button);
+  padding: 24rpx 0;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.btn-cancel {
+  background: #EFEFEF;
+}
+
+.btn-cancel:active {
+  opacity: 0.8;
+}
+
+.btn-save {
+  background: var(--color-primary);
+}
+
+.btn-save:active {
+  opacity: 0.8;
+}
+
+.action-btn-text {
+  font-size: var(--font-body);
+  color: var(--color-text-normal);
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+}
+
+.btn-save .action-btn-text {
+  color: #FFFFFF;
+}
+
+/* 删除按钮 */
+.delete-btn {
+  width: 100%;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-button);
+  padding: 24rpx 0;
+  text-align: center;
+  transition: opacity 0.2s ease;
+  box-shadow: var(--shadow-card);
+}
+
+.delete-btn:active {
+  opacity: 0.8;
+}
+
+.delete-btn-text {
+  font-size: var(--font-body);
+  color: var(--color-danger);
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+}
+
+/* ===== 删除确认弹窗 ===== */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 85%;
+  max-width: 560rpx;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  padding: 40rpx 32rpx;
+  box-shadow: var(--shadow-popup);
+}
+
+.modal-title {
+  font-size: var(--font-subtitle);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 16rpx;
+  text-align: center;
+  letter-spacing: 0.5rpx;
+}
+
+.modal-desc {
+  font-size: var(--font-body);
+  color: var(--color-text-normal);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+/* 弹窗按钮 */
+.modal-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  background: #EFEFEF;
+  border-radius: var(--radius-button);
+  padding: 24rpx 0;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.modal-btn:active {
+  opacity: 0.8;
+}
+
+.modal-btn-text {
+  font-size: var(--font-body);
+  color: var(--color-text-normal);
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
+}
+
+/* 确认删除按钮文字使用红色 */
+.modal-btn-confirm .modal-btn-text {
+  color: var(--color-danger);
+}

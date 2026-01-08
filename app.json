@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/add-restaurant/add-restaurant",
+    "pages/edit-restaurant/edit-restaurant",
+    "pages/restaurant/restaurant",
+    "pages/dish/dish",
+    "pages/search/search",
+    "pages/add-dishes/add-dishes"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "味觉空间",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8FAFC"
+  },
+
+"usingComponents": {
+  "share-canvas": "/components/share-canvas/share-canvas"
+},
+
+  "lazyCodeLoading": "requiredComponents", 
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "cloud": true
+}
