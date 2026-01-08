@@ -1,31 +1,53 @@
 // pages/add-restaurant/add-restaurant.js
 const validator = require('../../utils/validator');
+const ImageHelper = require('../../utils/image-helper');
 
 Page({
   data: {
     restaurantName: '',
     restaurantAddress: '',
-    restaurantTags: '',  // 餐厅标签输入字符串
+    restaurantTags: '',
     dishes: [
-      { name: '', rating: '', note: '', tags: '', photoUrl: '' },  // 添加 photoUrl
+      { name: '', rating: '', note: '', tags: '', photoUrl: '' },
       { name: '', rating: '', note: '', tags: '', photoUrl: '' },
       { name: '', rating: '', note: '', tags: '', photoUrl: '' }
-    ]
+    ],
+    // 表单验证状态
+    validation: {
+      restaurantNameError: '',
+      restaurantAddressError: ''
+    }
   },
 
-  // 餐厅名称输入
+  // 餐厅名称输入（实时验证）
   onNameInput(e) {
     const value = validator.validateRestaurantName(e.detail.value);
+    let error = '';
+
+    if (value.length === 0) {
+      error = ''; // 空值不显示错误
+    } else if (!validator.isLengthValid(value, 1, 15)) {
+      error = '餐厅名称为1-15字';
+    }
+
     this.setData({
-      restaurantName: value
+      restaurantName: value,
+      'validation.restaurantNameError': error
     });
   },
 
-  // 餐厅地址输入
+  // 餐厅地址输入（实时验证）
   onAddressInput(e) {
     const value = validator.validateRestaurantAddress(e.detail.value);
+    let error = '';
+
+    if (value.length > 0 && !validator.isLengthValid(value, 2, 30)) {
+      error = '餐厅地址为2-30字';
+    }
+
     this.setData({
-      restaurantAddress: value
+      restaurantAddress: value,
+      'validation.restaurantAddressError': error
     });
   },
 
@@ -50,20 +72,17 @@ Page({
     const { index } = e.currentTarget.dataset;
     const dishes = this.data.dishes;
     
-    // 如果是最后一个菜品，且已填写名称
     if (index === dishes.length - 1 && dishes[index].name.trim()) {
-      // 自动添加新的空白菜品位置
       dishes.push({
         name: '',
-        rating: '',  // 默认不选中
+        rating: '',
         note: '',
         tags: '',
-        photoUrl: ''  // 新增
+        photoUrl: ''
       });
       
       this.setData({ dishes });
       
-      // 自动滚动到新位置
       setTimeout(() => {
         wx.pageScrollTo({
           selector: `.dish-item:last-child`,
@@ -98,130 +117,58 @@ Page({
     });
   },
 
-  
+  // 选择菜品图片（使用统一工具类）
+  onChooseDishImage(e) {
+    const { index } = e.currentTarget.dataset;
+    
+    ImageHelper.chooseAndUpload({
+      count: 1,
+      onSuccess: (fileID) => {
+        this.setData({
+          [`dishes[${index}].photoUrl`]: fileID
+        });
+      }
+    });
+  },
+
+  // 删除菜品照片（使用统一工具类）
+  onDeleteDishPhoto(e) {
+    const { index } = e.currentTarget.dataset;
+    const dish = this.data.dishes[index];
+    
+    if (!dish) {
+      console.error('菜品数据不存在', index);
+      return;
+    }
+    
+    const photoUrl = dish.photoUrl;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这张照片吗？',
+      success: (res) => {
+        if (res.confirm) {
+          ImageHelper.deleteFile(photoUrl);
+          
+          this.setData({
+            [`dishes[${index}].photoUrl`]: ''
+          });
+          
+          wx.showToast({
+            title: '已删除',
+            icon: 'success'
+          });
+        }
+      }
+    });
+  },
+
   // 取消
   onCancel() {
     wx.navigateBack();
   },
 
-  // 选择菜品图片 - 智能压缩版
-onChooseDishImage(e) {
-  const { index } = e.currentTarget.dataset;
-  
-  wx.chooseImage({
-    count: 1,
-    sourceType: ['album', 'camera'],
-    sizeType: ['compressed'],
-    success: (res) => {
-      const filePath = res.tempFilePaths[0];
-      
-      wx.getImageInfo({
-        src: filePath,
-        success: (info) => {
-          const fileSizeMB = info.size / 1024 / 1024;
-          
-          if (fileSizeMB <= 2) {
-            this.uploadDishImage(filePath, index);
-            return;
-          }
-          
-          wx.showLoading({ title: '处理中...' });
-          wx.compressImage({
-            src: filePath,
-            quality: 70,
-            success: (compressRes) => {
-              wx.hideLoading();
-              this.uploadDishImage(compressRes.tempFilePath, index);
-            },
-            fail: (err) => {
-              wx.hideLoading();
-              console.error('压缩失败', err);
-              wx.showModal({
-                title: '图片过大',
-                content: '图片文件过大且压缩失败，请选择较小的图片',
-                showCancel: false
-              });
-            }
-          });
-        }
-      });
-    }
-  });
-},
-
-// 上传菜品图片 - 新增
-uploadDishImage(filePath, index) {
-  wx.showLoading({
-    title: '上传中...',
-    mask: true
-  });
-  
-  const cloudPath = `dishes/${Date.now()}-${Math.floor(Math.random() * 10000)}.jpg`;
-  
-  wx.cloud.uploadFile({
-    cloudPath: cloudPath,
-    filePath: filePath,
-    success: (res) => {
-      this.setData({
-        [`dishes[${index}].photoUrl`]: res.fileID
-      });
-      wx.hideLoading();
-      wx.showToast({
-        title: '上传成功',
-        icon: 'success',
-        duration: 1500
-      });
-    },
-    fail: (err) => {
-      wx.hideLoading();
-      console.error('上传失败', err);
-      wx.showToast({
-        title: '上传失败，请重试',
-        icon: 'none'
-      });
-    }
-  });
-},
-
-// 删除菜品照片 - 新增
-onDeleteDishPhoto(e) {
-  const { index } = e.currentTarget.dataset;
-  const dish = this.data.dishes[index];
-  
-  if (!dish) {
-    console.error('菜品数据不存在', index);
-    return;
-  }
-  
-  const photoUrl = dish.photoUrl;
-  
-  wx.showModal({
-    title: '确认删除',
-    content: '确定要删除这张照片吗？',
-    success: (res) => {
-      if (res.confirm) {
-        if (photoUrl) {
-          wx.cloud.deleteFile({
-            fileList: [photoUrl],
-            success: () => console.log('云存储文件删除成功'),
-            fail: (err) => console.error('云存储文件删除失败', err)
-          });
-        }
-        
-        this.setData({
-          [`dishes[${index}].photoUrl`]: ''
-        });
-        
-        wx.showToast({
-          title: '已删除',
-          icon: 'success'
-        });
-      }
-    }
-  });
-},
-
-  // 保存
+  // 保存（最终验证）
   onSave() {
     const { restaurantName, restaurantAddress, restaurantTags, dishes } = this.data;
 
@@ -257,44 +204,51 @@ onDeleteDishPhoto(e) {
     const processedRestaurantTags = restaurantTags
       .split(/\s+/)
       .filter(tag => tag.trim().length > 0)
-      .slice(0, 5);  // 最多5个标签
+      .slice(0, 5);
 
-    // 过滤有效菜品（名称不为空）
-    const validDishes = dishes.filter(d => {
-      if (!d.name.trim()) return false;
+    // 过滤有效菜品
+    const validDishes = [];
+    for (let i = 0; i < dishes.length; i++) {
+      const d = dishes[i];
+      if (!d.name.trim()) continue;
       
-      // 验证菜品名称
       if (!validator.isLengthValid(d.name, 1, 20)) {
         wx.showToast({
-          title: '菜品名称为1-20字',
+          title: `菜品${i + 1}名称为1-20字`,
           icon: 'none'
         });
-        return false;
+        return;
       }
       
-      // 验证必须选择评分
       if (!d.rating || (d.rating !== 'must-try' && d.rating !== 'avoid')) {
         wx.showToast({
-          title: '请选择必点或避坑',
+          title: `请为菜品${i + 1}选择必点或避坑`,
           icon: 'none'
         });
-        return false;
+        return;
       }
       
-      // 验证菜品笔记
       if (d.note && !validator.isEmpty(d.note)) {
         if (!validator.isLengthValid(d.note, 0, 50)) {
           wx.showToast({
-            title: '菜品笔记不超过50字',
+            title: `菜品${i + 1}笔记不超过50字`,
             icon: 'none'
           });
-          return false;
+          return;
         }
       }
       
-      return true;
-    });
+      validDishes.push(d);
+    }
 
+    // 开始保存
+    this.saveData(restaurantName, restaurantAddress, processedRestaurantTags, validDishes);
+  },
+
+  /**
+   * 保存数据到数据库
+   */
+  saveData(restaurantName, restaurantAddress, restaurantTags, validDishes) {
     wx.showLoading({
       title: '保存中...',
       mask: true
@@ -310,7 +264,7 @@ onDeleteDishPhoto(e) {
         data: {
           name: restaurantName.trim(),
           address: restaurantAddress.trim() || '',
-          tags: processedRestaurantTags,  // 保存餐厅标签
+          tags: restaurantTags,
           mustTryCount: 0,
           avoidCount: 0,
           createTime: db.serverDate()
@@ -319,22 +273,21 @@ onDeleteDishPhoto(e) {
       .then(res => {
         restaurantId = res._id;
         
-        // 2. 如果有菜品，批量保存
+        // 2. 批量保存菜品
         if (validDishes.length > 0) {
           const dishPromises = validDishes.map(dish => {
-            // 处理菜品标签
             const dishTags = dish.tags
               .split(/\s+/)
               .filter(tag => tag.trim().length > 0)
-              .slice(0, 5);  // 最多5个标签
+              .slice(0, 5);
 
             return db.collection('dishes').add({
               data: {
                 dishName: dish.name.trim(),
                 rating: dish.rating,
                 note: dish.note.trim() || '',
-                tags: dishTags,  // 保存菜品标签
-                photoUrl: dish.photoUrl || '',  // 新增：保存照片URL
+                tags: dishTags,
+                photoUrl: dish.photoUrl || '',
                 restaurantId: restaurantId,
                 createTime: db.serverDate()
               }
@@ -366,13 +319,17 @@ onDeleteDishPhoto(e) {
       })
       .then(res => {
         wx.hideLoading();
+        
+        // 清除缓存
+        const app = getApp();
+        app.clearCache();
+        
         wx.showToast({
           title: '保存成功',
           icon: 'success',
           duration: 1000
         });
 
-        // 跳转到餐厅详情页
         setTimeout(() => {
           wx.redirectTo({
             url: `/pages/restaurant/restaurant?id=${restaurantId}&name=${encodeURIComponent(restaurantName.trim())}`

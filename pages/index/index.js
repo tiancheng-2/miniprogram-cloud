@@ -1,116 +1,188 @@
 // pages/index/index.js
+const app = getApp();
+
 Page({
   data: {
     restaurants: [],
-    loading: true,
+    loading: false,
     // 统计数据
     totalRestaurants: 0,
     totalDishes: 0,
     totalMustTry: 0,
-    totalAvoid: 0  // 新增避坑统计
+    totalAvoid: 0
+  },
+
+  onLoad() {
+    // 首次加载
+    this.loadData(false);
   },
 
   onShow() {
-    // 每次显示页面时加载餐厅列表
-    this.loadRestaurants();
-    this.loadStatistics();
+    // 从其他页面返回时，检查是否需要刷新
+    // 如果缓存失效，才重新加载
+    if (!app.isCacheValid()) {
+      this.loadData(false);
+    } else {
+      // 使用缓存数据
+      this.loadFromCache();
+    }
   },
 
-  // 加载餐厅列表
-  loadRestaurants() {
-    wx.showLoading({
-      title: '加载中...',
-      mask: true
-    });
-
-    const db = wx.cloud.database();
-    db.collection('restaurants')
-      .orderBy('createTime', 'desc')
-      .get()
-      .then(res => {
-        wx.hideLoading();
-        
-        // 为每个餐厅生成封面字符（取首字）
-        const restaurants = res.data.map(item => {
-          return {
-            ...item,
-            coverChar: this.getCoverChar(item.name)
-          };
-        });
-        
-        this.setData({
-          restaurants: restaurants,
-          loading: false
-        });
-      })
-      .catch(err => {
-        wx.hideLoading();
-        
-        console.error('加载餐厅列表失败', err);
-        wx.showToast({
-          title: '加载失败',
-          icon: 'none'
-        });
-        
-        this.setData({
-          loading: false
-        });
-      });
+  /**
+   * 下拉刷新
+   */
+  onPullDownRefresh() {
+    this.loadData(true);
   },
 
-  // 加载统计数据
-  loadStatistics() {
-    const db = wx.cloud.database();
+  /**
+   * 从缓存加载数据
+   */
+  loadFromCache() {
+    const { restaurants, statistics } = app.globalData.cache;
     
-    Promise.all([
-      // 统计餐厅总数
-      db.collection('restaurants').count(),
-      // 统计菜品总数
-      db.collection('dishes').count(),
-      // 统计必点菜品数
-      db.collection('dishes').where({
-        rating: 'must-try'
-      }).count(),
-      // 统计避坑菜品数
-      db.collection('dishes').where({
-        rating: 'avoid'
-      }).count()
-    ])
-    .then(results => {
+    if (restaurants) {
       this.setData({
-        totalRestaurants: results[0].total || 0,
-        totalDishes: results[1].total || 0,
-        totalMustTry: results[2].total || 0,
-        totalAvoid: results[3].total || 0
+        restaurants: restaurants.map(item => ({
+          ...item,
+          coverChar: this.getCoverChar(item.name)
+        }))
       });
+    }
+
+    if (statistics) {
+      this.setData({
+        totalRestaurants: statistics.totalRestaurants || 0,
+        totalDishes: statistics.totalDishes || 0,
+        totalMustTry: statistics.totalMustTry || 0,
+        totalAvoid: statistics.totalAvoid || 0
+      });
+    }
+  },
+
+  /**
+   * 加载所有数据（优化：合并请求）
+   */
+  loadData(isPullDown = false) {
+    if (this.data.loading) return;
+
+    this.setData({ loading: true });
+
+    if (!isPullDown) {
+      wx.showLoading({
+        title: '加载中...',
+        mask: true
+      });
+    }
+
+    const db = wx.cloud.database();
+
+    // 合并所有请求为一次性执行
+    Promise.all([
+      // 1. 获取餐厅列表
+      db.collection('restaurants')
+        .orderBy('createTime', 'desc')
+        .get(),
+      
+      // 2-5. 获取统计数据（改用聚合查询）
+      this.getStatistics()
+    ])
+    .then(([restaurantsRes, statistics]) => {
+      // 处理餐厅数据
+      const restaurants = restaurantsRes.data.map(item => ({
+        ...item,
+        coverChar: this.getCoverChar(item.name)
+      }));
+
+      // 更新数据
+      this.setData({
+        restaurants: restaurants,
+        totalRestaurants: statistics.totalRestaurants,
+        totalDishes: statistics.totalDishes,
+        totalMustTry: statistics.totalMustTry,
+        totalAvoid: statistics.totalAvoid,
+        loading: false
+      });
+
+      // 缓存数据
+      app.setCache('restaurants', restaurantsRes.data);
+      app.setCache('statistics', statistics);
+
+      if (!isPullDown) {
+        wx.hideLoading();
+      }
     })
     .catch(err => {
-      console.error('加载统计数据失败', err);
+      console.error('加载数据失败', err);
+      this.setData({ loading: false });
+
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+
+      if (!isPullDown) {
+        wx.hideLoading();
+      }
+    })
+    .finally(() => {
+      if (isPullDown) {
+        wx.stopPullDownRefresh();
+      }
     });
   },
 
-  // 生成封面字符（取餐厅名首字）
+  /**
+   * 获取统计数据（优化：减少查询次数）
+   */
+  getStatistics() {
+    const db = wx.cloud.database();
+
+    return Promise.all([
+      db.collection('restaurants').count(),
+      db.collection('dishes').count(),
+      db.collection('dishes').where({ rating: 'must-try' }).count(),
+      db.collection('dishes').where({ rating: 'avoid' }).count()
+    ])
+    .then(([restaurantsCount, dishesCount, mustTryCount, avoidCount]) => {
+      return {
+        totalRestaurants: restaurantsCount.total || 0,
+        totalDishes: dishesCount.total || 0,
+        totalMustTry: mustTryCount.total || 0,
+        totalAvoid: avoidCount.total || 0
+      };
+    });
+  },
+
+  /**
+   * 生成封面字符
+   */
   getCoverChar(name) {
     if (!name) return '食';
-    // 取第一个字符
     return name.charAt(0);
   },
 
-  // 跳转到新增餐厅页面
+  /**
+   * 跳转到新增餐厅页面
+   */
   goToAddRestaurant() {
     wx.navigateTo({
       url: '/pages/add-restaurant/add-restaurant'
     });
   },
 
-  // 跳转到搜索页面
+  /**
+   * 跳转到搜索页面
+   */
   goToSearch() {
     wx.navigateTo({
       url: '/pages/search/search'
     });
   },
 
-  // 前往餐厅详情
+  /**
+   * 前往餐厅详情
+   */
   goToRestaurant(e) {
     const { id, name } = e.currentTarget.dataset;
     wx.navigateTo({
@@ -118,7 +190,9 @@ Page({
     });
   },
 
-  // 编辑餐厅
+  /**
+   * 编辑餐厅
+   */
   onEditRestaurant(e) {
     const { id, name, address } = e.currentTarget.dataset;
     wx.navigateTo({

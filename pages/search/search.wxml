@@ -12,11 +12,17 @@
     />
   </view>
 
+  <!-- 搜索中状态 -->
+  <view wx:if="{{isSearching}}" class="searching-state">
+    <view class="loading-icon">🔍</view>
+    <view class="searching-text">搜索中...</view>
+  </view>
+
   <!-- 搜索结果 -->
-  <view wx:if="{{hasResults}}" class="results-section">
+  <view wx:elif="{{hasSearched && hasResults}}" class="results-section">
     <!-- 餐厅结果 -->
     <view wx:if="{{restaurantResults.length > 0}}" class="result-group">
-      <view class="result-title">餐厅</view>
+      <view class="result-title">餐厅 ({{restaurantResults.length}})</view>
       <view class="result-list">
         <view 
           wx:for="{{restaurantResults}}" 
@@ -35,7 +41,7 @@
 
     <!-- 菜品结果 -->
     <view wx:if="{{dishResults.length > 0}}" class="result-group">
-      <view class="result-title">菜品</view>
+      <view class="result-title">菜品 ({{dishResults.length}})</view>
       <view class="result-list">
         <view 
           wx:for="{{dishResults}}" 
@@ -58,12 +64,16 @@
     </view>
   </view>
 
-  <!-- 空状态 -->
-  <view wx:elif="{{searchKeyword.length > 0}}" class="empty-result">
-    <view class="empty-text">没有找到相关内容</view>
+  <!-- 无结果状态 -->
+  <view wx:elif="{{hasSearched && !hasResults}}" class="empty-result">
+    <view class="empty-icon">😔</view>
+    <view class="empty-text">没有找到"{{searchKeyword}}"相关内容</view>
+    <view class="empty-hint">试试其他关键词吧</view>
   </view>
 
+  <!-- 初始状态 -->
   <view wx:else class="empty-result">
+    <view class="empty-icon">🔍</view>
     <view class="empty-text">输入关键词搜索餐厅或菜品</view>
   </view>
 </view>

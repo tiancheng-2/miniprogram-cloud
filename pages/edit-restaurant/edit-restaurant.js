@@ -135,6 +135,8 @@ Page({
       })
       .then(res => {
         wx.hideLoading();
+        const app = getApp();
+        app.clearCache();
         wx.showToast({
           title: '保存成功',
           icon: 'success',
@@ -197,6 +199,8 @@ Page({
       })
       .then(res => {
         wx.hideLoading();
+        const app = getApp();
+        app.clearCache();
         wx.showToast({
           title: '删除成功',
           icon: 'success',

@@ -1,13 +1,24 @@
 // pages/search/search.js
+const { debounce } = require('../../utils/debounce');
+
 Page({
   data: {
     searchKeyword: '',
     restaurantResults: [],
     dishResults: [],
-    hasResults: false
+    hasResults: false,
+    isSearching: false,  // 搜索中状态
+    hasSearched: false   // 是否已搜索过
   },
 
-  // 搜索输入
+  onLoad() {
+    // 创建防抖搜索函数
+    this.debouncedSearch = debounce(this.performSearch.bind(this), 500);
+  },
+
+  /**
+   * 搜索输入（防抖处理）
+   */
   onSearchInput(e) {
     const keyword = e.detail.value.trim();
     this.setData({
@@ -15,22 +26,28 @@ Page({
     });
 
     if (keyword) {
-      this.performSearch(keyword);
+      // 显示搜索中状态
+      this.setData({ isSearching: true });
+      // 防抖执行搜索
+      this.debouncedSearch(keyword);
     } else {
+      // 清空结果
       this.setData({
         restaurantResults: [],
         dishResults: [],
-        hasResults: false
+        hasResults: false,
+        isSearching: false,
+        hasSearched: false
       });
     }
   },
 
-  // 执行搜索
+  /**
+   * 执行搜索
+   */
   performSearch(keyword) {
     const db = wx.cloud.database();
-    const _ = db.command;
 
-    // 搜索餐厅（名称或地址）
     Promise.all([
       // 搜索餐厅名称
       db.collection('restaurants')
@@ -40,7 +57,9 @@ Page({
             options: 'i'
           })
         })
+        .limit(20)  // 限制结果数量
         .get(),
+      
       // 搜索餐厅地址
       db.collection('restaurants')
         .where({
@@ -49,7 +68,9 @@ Page({
             options: 'i'
           })
         })
+        .limit(20)
         .get(),
+      
       // 搜索菜品
       db.collection('dishes')
         .where({
@@ -58,6 +79,7 @@ Page({
             options: 'i'
           })
         })
+        .limit(20)
         .get()
     ])
     .then(results => {
@@ -66,7 +88,6 @@ Page({
       // 合并餐厅结果（去重）
       const restaurantMap = {};
       
-      // 添加按名称搜索到的餐厅
       restaurantNameRes.data.forEach(item => {
         restaurantMap[item._id] = {
           type: 'restaurant',
@@ -76,7 +97,6 @@ Page({
         };
       });
       
-      // 添加按地址搜索到的餐厅
       restaurantAddressRes.data.forEach(item => {
         restaurantMap[item._id] = {
           type: 'restaurant',
@@ -88,11 +108,12 @@ Page({
 
       const restaurants = Object.values(restaurantMap);
 
-      // 处理菜品结果（需要获取餐厅名称）
+      // 处理菜品结果
       const dishIds = dishRes.data.map(d => d.restaurantId);
       
       if (dishIds.length > 0) {
         // 获取餐厅信息
+        const _ = db.command;
         return db.collection('restaurants')
           .where({
             _id: _.in(dishIds)
@@ -125,11 +146,17 @@ Page({
       this.setData({
         restaurantResults: data.restaurants,
         dishResults: data.dishes,
-        hasResults: data.restaurants.length > 0 || data.dishes.length > 0
+        hasResults: data.restaurants.length > 0 || data.dishes.length > 0,
+        isSearching: false,
+        hasSearched: true
       });
     })
     .catch(err => {
       console.error('搜索失败', err);
+      this.setData({
+        isSearching: false,
+        hasSearched: true
+      });
       wx.showToast({
         title: '搜索失败',
         icon: 'none'
@@ -137,7 +164,9 @@ Page({
     });
   },
 
-  // 选择结果
+  /**
+   * 选择结果
+   */
   onSelectResult(e) {
     const { type, id, name, rating, photo, note, restaurantId, restaurantName } = e.currentTarget.dataset;
 

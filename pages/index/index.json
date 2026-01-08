@@ -1,4 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "味觉空间"
+  "navigationBarTitleText": "味觉空间",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F6F7F8"
 }
