@@ -1,37 +1,43 @@
 <!--pages/index/index.wxml-->
 <view class="page-container">
-  <!-- 固定顶部区域 -->
-  <view class="fixed-header">
-    <!-- 搜索框 -->
-    <view class="search-box" bindtap="goToSearch">
-      <text class="search-placeholder">搜索餐厅或菜品</text>
-    </view>
+  <!-- 顶部搜索框 -->
+  <view class="search-bar" bindtap="goToSearch">
+    <text class="search-icon">🔍</text>
+    <text class="search-placeholder">搜索餐厅或菜品</text>
+  </view>
 
-    <!-- 统计卡片 -->
-    <view class="stats-container">
-      <view class="stat-card">
-        <view class="stat-number">{{totalRestaurants}}</view>
-        <view class="stat-label">餐厅</view>
-      </view>
-      <view class="stat-card">
-        <view class="stat-number">{{totalDishes}}</view>
-        <view class="stat-label">菜品</view>
-      </view>
-      <view class="stat-card">
-        <view class="stat-number">{{totalMustTry}}</view>
-        <view class="stat-label">👍 必点</view>
-      </view>
-      <view class="stat-card">
-        <view class="stat-number">{{totalAvoid}}</view>
-        <view class="stat-label">⚠️ 避坑</view>
-      </view>
+  <!-- 统计卡片 -->
+  <view class="stats-grid">
+    <view class="stat-item">
+      <view class="stat-number">{{totalRestaurants}}</view>
+      <view class="stat-label">餐厅</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-number">{{totalDishes}}</view>
+      <view class="stat-label">菜品</view>
+    </view>
+    <view class="stat-item stat-must">
+      <view class="stat-number">{{totalMustTry}}</view>
+      <view class="stat-label">必点</view>
+    </view>
+    <view class="stat-item stat-avoid">
+      <view class="stat-number">{{totalAvoid}}</view>
+      <view class="stat-label">避坑</view>
     </view>
   </view>
 
   <!-- 可滚动内容区域 -->
-  <scroll-view class="scroll-content" scroll-y enhanced show-scrollbar="{{false}}">
-    <!-- 餐厅列表 -->
-    <view wx:if="{{restaurants.length > 0}}" class="restaurant-list">
+  <scroll-view 
+    class="scroll-content" 
+    scroll-y 
+    enhanced 
+    show-scrollbar="{{false}}"
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onPullDownRefresh"
+  >
+    <!-- 餐厅列表 - 2列Masonry布局 -->
+    <view wx:if="{{restaurants.length > 0}}" class="restaurant-masonry">
       <view 
         class="restaurant-card" 
         wx:for="{{restaurants}}" 
@@ -40,27 +46,33 @@
         data-id="{{item._id}}" 
         data-name="{{item.name}}"
       >
+        <!-- 封面区域 -->
+        <view class="card-cover">
+          <text class="cover-char">{{item.coverChar}}</text>
+        </view>
+
         <!-- 餐厅信息 -->
-        <view class="restaurant-info">
-          <view class="restaurant-header">
-            <view class="restaurant-name">{{item.name}}</view>
-            <view wx:if="{{item.address}}" class="restaurant-address">{{item.address}}</view>
+        <view class="card-body">
+          <view class="restaurant-name">{{item.name}}</view>
+          
+          <view wx:if="{{item.address}}" class="restaurant-address">
+            📍 {{item.address}}
           </view>
           
           <!-- 标签 -->
-          <view wx:if="{{item.tags && item.tags.length > 0}}" class="tags">
-            <view class="tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="tags-row">
+            <view class="tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">
+              {{tag}}
+            </view>
           </view>
           
           <!-- 菜品统计 -->
           <view class="dish-stats">
-            <view class="dish-stat">
-              <view class="stat-badge must">👍</view>
-              <view class="stat-count">{{item.mustTryCount}}道</view>
+            <view class="stat-badge stat-badge-must">
+              <text class="badge-text">👍 {{item.mustTryCount}}</text>
             </view>
-            <view class="dish-stat">
-              <view class="stat-badge avoid">⚠️</view>
-              <view class="stat-count">{{item.avoidCount}}道</view>
+            <view class="stat-badge stat-badge-avoid">
+              <text class="badge-text">⚠️ {{item.avoidCount}}</text>
             </view>
           </view>
         </view>
@@ -68,16 +80,21 @@
     </view>
 
     <!-- 空状态 -->
-    <view wx:else class="empty">
-      <view class="empty-text">还没有记录餐厅
-开始记录你的味觉空间吧</view>
+    <view wx:else class="empty-state">
+      <text class="empty-icon">🍽️</text>
+      <text class="empty-text">还没有记录餐厅
+开始记录你的味觉空间吧</text>
     </view>
 
-    <!-- 删除 bottom-placeholder -->
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
   </scroll-view>
 
-  <!-- 固定底栏 -->
-  <view class="fixed-bottom-bar">
-    <view class="add-button" bindtap="goToAddRestaurant">记录新餐厅</view>
+  <!-- 固定底部按钮 -->
+  <view class="fixed-add-btn">
+    <view class="add-btn" bindtap="goToAddRestaurant">
+      <text class="add-icon">+</text>
+      <text class="add-text">记录新餐厅</text>
+    </view>
   </view>
 </view>

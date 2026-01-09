@@ -5,16 +5,15 @@
     "pages/edit-restaurant/edit-restaurant",
     "pages/restaurant/restaurant",
     "pages/dish/dish",
-    "pages/search/search",
     "pages/add-dishes/add-dishes",
-    "pages/share-poster/share-poster"
+    "pages/search/search"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FFFFFF",
     "navigationBarTitleText": "味觉空间",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F8FAFC"
+    "backgroundColor": "#F9F9F9"
   },
   "lazyCodeLoading": "requiredComponents",
   "style": "v2",

@@ -1,48 +1,51 @@
-/* ===== 味觉空间 · 全局样式规范 ===== */
-/* 关键词：干净 / 温暖 / 记录感 / 不像系统表单 */
+/* app.wxss - 新视觉规范全局样式（已修复输入框高度问题）*/
 
-/* ===== 1. CSS 变量定义 ===== */
+/* ==================== CSS 变量定义 ==================== */
 page {
-  /* 品牌主色 */
-  --color-primary: #FF8A3D;
-  --color-primary-soft: #FFE4D2;
-  
-  /* 状态色 */
-  --color-danger: #FF5A5A;
-  
   /* 背景色 */
-  --color-bg-page: #F6F7F8;
-  --color-bg-card: #FFFFFF;
+  --color-bg-page: #F9F9F9;          /* 奶油白 */
+  --color-bg-card: #FFFFFF;           /* 纯白卡片 */
   
   /* 文字颜色 */
-  --color-text-main: #222222;
-  --color-text-normal: #555555;
-  --color-text-sub: #999999;
+  --color-text-main: #2D2D2D;        /* 深炭灰（主要文字）*/
+  --color-text-normal: #5A5A5A;      /* 灰色（正文）*/
+  --color-text-sub: #A0A0A0;         /* 浅灰（次要说明）*/
+  
+  /* 品牌色 */
+  --color-must-try: #66BB6A;         /* 森林绿（必点）*/
+  --color-avoid: #EF5350;            /* 珊瑚粉红（避坑）*/
+  --color-must-try-soft: #E8F5E9;    /* 必点浅色背景 */
+  --color-avoid-soft: #FFEBEE;       /* 避坑浅色背景 */
   
   /* 圆角 */
-  --radius-card: 20rpx;
-  --radius-button: 999rpx;
-  --radius-tag: 12rpx;
-  --radius-input: 16rpx;
+  --radius-card: 12px;
+  --radius-button: 12px;
+  --radius-tag: 8px;
+  --radius-input: 12px;
   
   /* 阴影 */
-  --shadow-card: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
-  --shadow-popup: 0 16rpx 40rpx rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, 0.12);
   
   /* 字号 */
-  --font-title: 40rpx;
-  --font-subtitle: 32rpx;
+  --font-title: 36rpx;
+  --font-subtitle: 30rpx;
   --font-body: 28rpx;
   --font-caption: 24rpx;
   --font-tag: 22rpx;
   
+  /* 字体家族 */
+  --font-serif: 'Source Serif Pro', 'Noto Serif SC', Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Inter', sans-serif;
+  
   /* 页面背景 */
   background: var(--color-bg-page);
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
+  color: var(--color-text-main);
 }
 
-/* ===== 2. 基础通用组件 ===== */
+/* ==================== 通用组件样式 ==================== */
 
 /* 卡片 */
 .card {
@@ -52,23 +55,59 @@ page {
   box-shadow: var(--shadow-card);
 }
 
-/* 标签组 */
+/* 标题（使用衬线体）*/
+.title {
+  font-family: var(--font-serif);
+  font-size: var(--font-title);
+  font-weight: 600;
+  color: var(--color-text-main);
+  line-height: 1.4;
+}
+
+.subtitle {
+  font-family: var(--font-serif);
+  font-size: var(--font-subtitle);
+  font-weight: 500;
+  color: var(--color-text-main);
+  line-height: 1.4;
+}
+
+/* 正文 */
+.body-text {
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  color: var(--color-text-normal);
+  line-height: 1.6;
+}
+
+.caption-text {
+  font-family: var(--font-sans);
+  font-size: var(--font-caption);
+  color: var(--color-text-sub);
+  line-height: 1.5;
+}
+
+/* 标签 */
 .tag {
   display: inline-block;
   font-size: var(--font-tag);
   padding: 6rpx 16rpx;
   border-radius: var(--radius-tag);
   font-weight: 400;
-}
-
-.tag-primary {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.tag-danger {
   background: #F2F2F2;
   color: var(--color-text-sub);
+}
+
+.tag-must {
+  background: var(--color-must-try-soft);
+  color: var(--color-must-try);
+  font-weight: 500;
+}
+
+.tag-avoid {
+  background: var(--color-avoid-soft);
+  color: var(--color-avoid);
+  font-weight: 500;
 }
 
 /* 按钮 */
@@ -88,7 +127,7 @@ page {
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  background: var(--color-must-try);
   color: #FFFFFF;
 }
 
@@ -98,18 +137,25 @@ page {
 }
 
 .btn-danger {
-  background: var(--color-danger);
+  background: var(--color-avoid);
   color: #FFFFFF;
 }
 
-/* 输入框 */
+/* ==================== 输入框（已修复）==================== */
+
 .input {
+  width: 100%;
+  box-sizing: border-box;
   background: #FAFAFA;
   border-radius: var(--radius-input);
-  padding: 20rpx;
+  padding: 24rpx 20rpx;              /* ✅ 修复：增加垂直内边距 */
   font-size: var(--font-body);
   color: var(--color-text-main);
   border: none;
+  min-height: 88rpx;                 /* ✅ 修复：添加最小高度 */
+  line-height: 1.5;                  /* ✅ 修复：添加行高 */
+  display: flex;                     /* ✅ 修复：flex布局让文字垂直居中 */
+  align-items: center;               /* ✅ 修复：垂直居中 */
 }
 
 .input::placeholder {
@@ -117,13 +163,15 @@ page {
 }
 
 .textarea {
+  width: 100%;
+  box-sizing: border-box;
   background: #FAFAFA;
   border-radius: var(--radius-input);
   padding: 20rpx;
   font-size: var(--font-body);
   color: var(--color-text-main);
   border: none;
-  min-height: 160rpx;
+  min-height: 120rpx;                /* ✅ 修复：增加最小高度 */
   line-height: 1.6;
 }
 
@@ -131,36 +179,8 @@ page {
   color: var(--color-text-sub);
 }
 
-/* ===== 3. 文字规范 ===== */
-.text-title {
-  font-size: var(--font-title);
-  font-weight: 600;
-  color: var(--color-text-main);
-  line-height: 1.4;
-}
+/* ==================== 布局辅助类 ==================== */
 
-.text-subtitle {
-  font-size: var(--font-subtitle);
-  font-weight: 500;
-  color: var(--color-text-main);
-  line-height: 1.4;
-}
-
-.text-body {
-  font-size: var(--font-body);
-  font-weight: 400;
-  color: var(--color-text-normal);
-  line-height: 1.6;
-}
-
-.text-caption {
-  font-size: var(--font-caption);
-  font-weight: 400;
-  color: var(--color-text-sub);
-  line-height: 1.5;
-}
-
-/* ===== 4. 布局辅助类 ===== */
 .container {
   padding: 32rpx;
   min-height: 100vh;
@@ -171,127 +191,15 @@ page {
 }
 
 .section-title {
+  font-family: var(--font-serif);
   font-size: var(--font-subtitle);
   font-weight: 600;
   color: var(--color-text-main);
   margin-bottom: 20rpx;
 }
 
-/* ===== 5. 固定底部按钮区域 ===== */
-.fixed-bottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20rpx 32rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background: var(--color-bg-card);
-  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
-  z-index: 100;
-}
+/* ==================== 评分徽章 ==================== */
 
-.fixed-bottom .action-buttons {
-  display: flex;
-  gap: 16rpx;
-}
-
-.fixed-bottom .action-buttons .btn {
-  flex: 1;
-}
-
-/* ===== 6. 特定组件样式 ===== */
-
-/* 搜索框 */
-.search-box {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-card);
-  padding: 24rpx;
-  box-shadow: var(--shadow-card);
-}
-
-.search-input {
-  font-size: var(--font-body);
-  color: var(--color-text-sub);
-}
-
-/* 统计卡片 */
-.stat-card {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-card);
-  padding: 24rpx 16rpx;
-  text-align: center;
-  box-shadow: var(--shadow-card);
-}
-
-.stat-number {
-  font-size: 48rpx;
-  font-weight: 600;
-  color: var(--color-text-main);
-  margin-bottom: 8rpx;
-}
-
-.stat-label {
-  font-size: var(--font-caption);
-  color: var(--color-text-sub);
-}
-
-/* 餐厅卡片 */
-.restaurant-card {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.3s ease;
-}
-
-.restaurant-card:active {
-  transform: scale(0.98);
-}
-
-.restaurant-name {
-  font-size: var(--font-subtitle);
-  font-weight: 600;
-  color: var(--color-text-main);
-  margin-bottom: 8rpx;
-  line-height: 1.4;
-}
-
-.restaurant-address {
-  font-size: var(--font-caption);
-  color: var(--color-text-sub);
-  line-height: 1.5;
-  margin-bottom: 12rpx;
-}
-
-/* 菜品卡片 */
-.dish-card {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  transition: transform 0.3s ease;
-}
-
-.dish-card:active {
-  transform: scale(0.98);
-}
-
-.dish-name {
-  font-size: var(--font-subtitle);
-  font-weight: 600;
-  color: var(--color-text-main);
-  margin-bottom: 8rpx;
-}
-
-.dish-note {
-  font-size: var(--font-caption);
-  color: var(--color-text-sub);
-  line-height: 1.6;
-  margin-bottom: 12rpx;
-}
-
-/* 评分标签 */
 .rating-badge {
   display: inline-block;
   padding: 8rpx 20rpx;
@@ -300,17 +208,35 @@ page {
   font-weight: 500;
 }
 
-.rating-badge.must {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
+.rating-badge-must {
+  background: var(--color-must-try-soft);
+  color: var(--color-must-try);
 }
 
-.rating-badge.avoid {
-  background: #F2F2F2;
+.rating-badge-avoid {
+  background: var(--color-avoid-soft);
+  color: var(--color-avoid);
+}
+
+/* ==================== 空状态 ==================== */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: var(--font-body);
   color: var(--color-text-sub);
+  text-align: center;
+  line-height: 1.8;
 }
 
-/* 弹窗 */
+/* ==================== 弹窗 ==================== */
+
 .modal-mask {
   position: fixed;
   top: 0;
@@ -334,6 +260,7 @@ page {
 }
 
 .modal-title {
+  font-family: var(--font-serif);
   font-size: var(--font-subtitle);
   font-weight: 600;
   color: var(--color-text-main);
@@ -358,30 +285,25 @@ page {
   flex: 1;
 }
 
-/* ===== 7. 空状态 ===== */
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
+/* ==================== 固定底部 ==================== */
+
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: var(--color-bg-card);
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
+  z-index: 100;
 }
 
-.empty-text {
-  font-size: var(--font-body);
-  color: var(--color-text-sub);
-  text-align: center;
-  line-height: 1.8;
-}
+/* ==================== 动画 ==================== */
 
-/* ===== 8. 动画 ===== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInUp {

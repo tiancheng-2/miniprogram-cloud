@@ -1,15 +1,39 @@
-/* pages/dish/dish.wxss - 菜品详情（遵循视觉规范）*/
+/* pages/dish/dish.wxss */
 
 .container {
   padding: 32rpx;
   min-height: 100vh;
 }
 
-/* ===== 非编辑模式 ===== */
+.container.editing {
+  padding-bottom: 180rpx;
+}
 
-/* 菜品顶部信息 */
+/* ===== 查看模式 ===== */
+
+/* 菜品照片 */
+.dish-photo-section {
+  width: calc(100% + 64rpx);
+  margin: -32rpx -32rpx 24rpx -32rpx;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 */
+  position: relative;
+  overflow: hidden;
+  background: #FAFAFA;
+}
+
+.dish-main-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 菜品头部 */
 .dish-header {
-  margin-bottom: 24rpx;
+  margin-bottom: 32rpx;
 }
 
 .name-row {
@@ -20,13 +44,13 @@
 }
 
 .dish-name {
-  flex: 1;
+  font-family: var(--font-serif);
   font-size: var(--font-title);
   font-weight: 600;
   color: var(--color-text-main);
-  letter-spacing: 0.5rpx;
-  line-height: 1.3;
+  flex: 1;
   padding-right: 16rpx;
+  line-height: 1.3;
 }
 
 .edit-icon {
@@ -40,8 +64,8 @@
   color: var(--color-text-sub);
   background: #FAFAFA;
   border-radius: 50%;
-  transition: all 0.2s ease;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .edit-icon:active {
@@ -49,60 +73,42 @@
   transform: scale(0.92);
 }
 
-.dish-tag {
+.dish-rating {
   display: inline-block;
-  font-size: var(--font-tag);
-  font-weight: 500;
   padding: 8rpx 20rpx;
   border-radius: var(--radius-tag);
+  font-size: var(--font-body);
+  font-weight: 500;
   margin-bottom: 12rpx;
-  letter-spacing: 0.5rpx;
 }
 
-.dish-tag.must-try {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
+.dish-rating.must {
+  background: var(--color-must-try-soft);
+  color: var(--color-must-try);
 }
 
-.dish-tag.avoid {
-  background: #F2F2F2;
-  color: var(--color-text-sub);
+.dish-rating.avoid {
+  background: var(--color-avoid-soft);
+  color: var(--color-avoid);
 }
 
 .dish-restaurant {
-  font-size: var(--font-caption);
+  font-size: var(--font-body);
   color: var(--color-text-sub);
-  letter-spacing: 0.5rpx;
+  padding: 12rpx 0;
 }
 
-/* 菜品照片 */
-.photo-section {
-  margin-bottom: 24rpx;
-}
-
-.photo-swiper {
-  width: 100%;
-  height: 480rpx;
-  border-radius: var(--radius-card);
-  overflow: hidden;
-}
-
-.photo-image {
-  width: 100%;
-  height: 100%;
-}
-
-/* 菜品笔记 */
-.note-section {
+/* 章节 */
+.section {
   margin-bottom: 32rpx;
 }
 
-.note-title {
-  font-size: var(--font-body);
+.section-title {
+  font-family: var(--font-serif);
+  font-size: var(--font-subtitle);
   font-weight: 600;
   color: var(--color-text-main);
-  margin-bottom: 12rpx;
-  letter-spacing: 0.5rpx;
+  margin-bottom: 16rpx;
 }
 
 .note-text {
@@ -112,103 +118,45 @@
   font-size: var(--font-body);
   color: var(--color-text-main);
   line-height: 1.8;
-  letter-spacing: 0.5rpx;
 }
 
-.note-empty {
-  background: #FAFAFA;
-  padding: 20rpx;
-  border-radius: var(--radius-input);
-  font-size: var(--font-caption);
-  color: var(--color-text-sub);
-  text-align: center;
-  letter-spacing: 0.5rpx;
-}
-
-/* 标签区域 */
-.tags-section {
-  margin-bottom: 32rpx;
-}
-
-.tags-title {
-  font-size: var(--font-body);
-  font-weight: 600;
-  color: var(--color-text-main);
-  margin-bottom: 12rpx;
-  letter-spacing: 0.5rpx;
-}
-
-.tags {
+.tags-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8rpx;
 }
 
-.tag {
-  padding: 6rpx 16rpx;
-  background: #F2F2F2;
-  border-radius: var(--radius-tag);
-  font-size: var(--font-tag);
-  color: var(--color-text-sub);
-  font-weight: 400;
-  letter-spacing: 0.5rpx;
-}
-
-/* 删除按钮 */
+/* 删除区域 */
 .delete-section {
-  margin-top: 48rpx;
-}
-
-.delete-btn {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-button);
-  padding: 24rpx;
-  text-align: center;
-  box-shadow: var(--shadow-card);
-  transition: opacity 0.2s ease;
-}
-
-.delete-btn:active {
-  opacity: 0.8;
-}
-
-.delete-btn-text {
-  font-size: var(--font-body);
-  color: var(--color-danger);
-  font-weight: 500;
-  letter-spacing: 0.5rpx;
+  margin-top: 80rpx;
 }
 
 /* ===== 编辑模式 ===== */
-.edit-mode {
-  padding-bottom: 0;
-}
 
 .edit-title {
+  font-family: var(--font-serif);
   font-size: var(--font-subtitle);
   font-weight: 600;
   color: var(--color-text-main);
   margin-bottom: 24rpx;
-  letter-spacing: 0.5rpx;
 }
 
 .edit-form {
   margin-bottom: 32rpx;
 }
 
-.edit-item {
+.form-item {
   margin-bottom: 24rpx;
 }
 
-.edit-label {
-  font-size: var(--font-body);
-  color: var(--color-text-main);
-  margin-bottom: 12rpx;
-  font-weight: 500;
-  letter-spacing: 0.5rpx;
+.form-label {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+  font-size: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-main);
 }
 
 .char-count {
@@ -217,43 +165,14 @@
   font-weight: 400;
 }
 
-/* 编辑输入框 */
-.edit-input, .edit-textarea {
-  width: 100%;
-  box-sizing: border-box;
-  background: #FAFAFA;
-  border-radius: var(--radius-input);
-  padding: 20rpx;
-  font-size: var(--font-body);
-  color: var(--color-text-main);
-  letter-spacing: 0.5rpx;
-}
-
-.edit-input {
-  display: flex;
-  align-items: center;
-  min-height: 88rpx;
-  line-height: 1.5;
-}
-
-.edit-textarea {
-  min-height: 160rpx;
-  line-height: 1.6;
-}
-
-.edit-input::placeholder, .edit-textarea::placeholder {
-  color: var(--color-text-sub);
-  font-weight: 400;
-}
-
 /* 评分按钮 */
 .rating-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12rpx;
 }
 
 .rating-btn {
-  flex: 1;
   background: #FAFAFA;
   border-radius: var(--radius-input);
   padding: 24rpx 0;
@@ -265,31 +184,26 @@
   transform: scale(0.98);
 }
 
-.rating-btn.active {
-  background: var(--color-primary-soft);
+.rating-btn.active.must {
+  background: var(--color-must-try-soft);
 }
 
-.rating-btn.must.active {
-  background: var(--color-primary-soft);
+.rating-btn.active.avoid {
+  background: var(--color-avoid-soft);
 }
 
-.rating-btn.avoid.active {
-  background: #F2F2F2;
-}
-
-.rating-btn-text {
+.rating-text {
   font-size: var(--font-body);
   color: var(--color-text-sub);
   font-weight: 500;
-  letter-spacing: 0.5rpx;
 }
 
-.rating-btn.active .rating-btn-text {
-  color: var(--color-text-main);
+.rating-btn.active.must .rating-text {
+  color: var(--color-must-try);
 }
 
-.rating-btn.must.active .rating-btn-text {
-  color: var(--color-primary);
+.rating-btn.active.avoid .rating-text {
+  color: var(--color-avoid);
 }
 
 /* 照片上传 */
@@ -361,47 +275,16 @@
   font-size: var(--font-body);
   color: var(--color-text-sub);
   font-weight: 400;
-  letter-spacing: 0.5rpx;
 }
 
-/* 编辑按钮区域 */
+/* 底部占位 */
+.bottom-placeholder {
+  height: 160rpx;
+}
+
+/* 底部按钮 */
 .action-buttons {
-  position: fixed;
-  bottom: 32rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12rpx;
-}
-
-.action-btn {
-  width: 330rpx;
-  background: #EFEFEF;
-  border-radius: var(--radius-button);
-  padding: 24rpx 0;
-  text-align: center;
-  font-size: var(--font-body);
-  font-weight: 500;
-  letter-spacing: 0.5rpx;
-  color: var(--color-text-normal);
-  transition: opacity 0.2s ease;
-}
-
-.action-btn:active {
-  opacity: 0.8;
-}
-
-.action-btn.save {
-  background: var(--color-primary);
-}
-
-.action-btn-text {
-  font-size: var(--font-body);
-  color: var(--color-text-normal);
-  font-weight: 500;
-  letter-spacing: 0.5rpx;
-}
-
-.action-btn.save .action-btn-text {
-  color: #FFFFFF;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
 }

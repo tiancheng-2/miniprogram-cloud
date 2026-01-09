@@ -1,17 +1,19 @@
-/* pages/restaurant/restaurant.wxss - 餐厅详情（遵循视觉规范）*/
+/* pages/restaurant/restaurant.wxss */
 
 .container {
-  padding: 32rpx;
-  padding-bottom: 160rpx;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* ===== 餐厅头部 ===== */
 .restaurant-header {
+  flex-shrink: 0;
   background: var(--color-bg-card);
+  padding: 32rpx;
+  margin: 20rpx 32rpx;
   border-radius: var(--radius-card);
-  padding: 32rpx 24rpx;
-  margin-bottom: 20rpx;
   box-shadow: var(--shadow-card);
   display: flex;
   justify-content: space-between;
@@ -23,10 +25,10 @@
 }
 
 .restaurant-name {
+  font-family: var(--font-serif);
   font-size: var(--font-title);
   font-weight: 600;
   color: var(--color-text-main);
-  letter-spacing: 1rpx;
   margin-bottom: 12rpx;
   line-height: 1.3;
 }
@@ -34,18 +36,17 @@
 .restaurant-address {
   font-size: var(--font-body);
   color: var(--color-text-sub);
-  font-weight: 400;
-  letter-spacing: 0.5rpx;
+  margin-bottom: 16rpx;
   line-height: 1.6;
 }
 
-.header-actions {
+.restaurant-tags {
   display: flex;
-  gap: 12rpx;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8rpx;
 }
 
-.share-icon, .edit-icon {
+.edit-icon {
   width: 56rpx;
   height: 56rpx;
   display: flex;
@@ -56,33 +57,35 @@
   color: var(--color-text-sub);
   background: #FAFAFA;
   border-radius: 50%;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
-.share-icon:active, .edit-icon:active {
+.edit-icon:active {
   background: #F0F0F0;
   transform: scale(0.92);
 }
 
 /* ===== 筛选标签 ===== */
 .filter-tabs {
-  display: flex;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12rpx;
+  padding: 0 32rpx;
   margin-bottom: 20rpx;
 }
 
 .filter-tab {
-  flex: 1;
   background: var(--color-bg-card);
   border-radius: var(--radius-button);
-  padding: 24rpx 0;
+  padding: 20rpx 0;
   text-align: center;
   font-size: var(--font-body);
   font-weight: 500;
   color: var(--color-text-sub);
-  transition: all 0.2s ease;
-  letter-spacing: 0.5rpx;
   box-shadow: var(--shadow-card);
+  transition: all 0.2s ease;
 }
 
 .filter-tab:active {
@@ -90,20 +93,16 @@
 }
 
 .filter-tab.active {
-  background: var(--color-primary);
-  color: white;
-}
-
-.filter-tab-text {
-  font-size: var(--font-body);
-  font-weight: 500;
+  background: var(--color-must-try);
+  color: #FFFFFF;
 }
 
 /* ===== 菜品列表 ===== */
 .dish-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+  flex: 1;
+  height: 0;
+  padding: 0 32rpx;
+  box-sizing: border-box;
 }
 
 .dish-card {
@@ -111,24 +110,24 @@
   border-radius: var(--radius-card);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  transition: transform 0.2s ease;
+  margin-bottom: 16rpx;
   display: flex;
-  flex-direction: row;
+  transition: transform 0.2s ease;
 }
 
 .dish-card:active {
   transform: scale(0.98);
 }
 
+/* 菜品图片 */
 .dish-image {
-  width: 240rpx;
-  height: auto;
-  min-height: 240rpx;
-  background: #FAFAFA;
-  position: relative;
+  width: 200rpx;
+  height: 200rpx;
   flex-shrink: 0;
+  background: #FAFAFA;
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 }
 
 .dish-photo {
@@ -138,19 +137,17 @@
 }
 
 .image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 72rpx;
-  font-weight: 300;
-  color: #E0E0E0;
+  font-family: var(--font-serif);
+  font-size: 64rpx;
+  font-weight: 600;
+  color: var(--color-text-sub);
+  opacity: 0.3;
 }
 
+/* 菜品信息 */
 .dish-info {
   flex: 1;
-  padding: 24rpx;
+  padding: 20rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -164,37 +161,37 @@
 }
 
 .dish-name {
+  font-family: var(--font-serif);
   font-size: var(--font-subtitle);
   font-weight: 600;
   color: var(--color-text-main);
-  letter-spacing: 0.5rpx;
   flex: 1;
   padding-right: 12rpx;
+  line-height: 1.3;
 }
 
 .dish-rating {
-  padding: 8rpx 20rpx;
+  padding: 6rpx 16rpx;
   border-radius: var(--radius-tag);
   font-size: var(--font-tag);
   font-weight: 500;
-  letter-spacing: 0.5rpx;
   flex-shrink: 0;
 }
 
 .dish-rating.must {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
+  background: var(--color-must-try-soft);
+  color: var(--color-must-try);
 }
 
 .dish-rating.avoid {
-  background: #F2F2F2;
-  color: var(--color-text-sub);
+  background: var(--color-avoid-soft);
+  color: var(--color-avoid);
 }
 
 .dish-note {
   font-size: var(--font-caption);
   color: var(--color-text-sub);
-  line-height: 1.7;
+  line-height: 1.6;
   margin-bottom: 12rpx;
 }
 
@@ -205,53 +202,44 @@
 }
 
 .dish-tag {
-  padding: 6rpx 16rpx;
+  padding: 4rpx 12rpx;
   background: #F2F2F2;
   border-radius: var(--radius-tag);
   font-size: var(--font-tag);
   color: var(--color-text-sub);
 }
 
-.view-empty {
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
   font-size: var(--font-body);
   color: var(--color-text-sub);
   text-align: center;
-  padding: 240rpx 0;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+/* ===== 底部占位 ===== */
+.bottom-placeholder {
+  height: 120rpx;
 }
 
 /* ===== 底部按钮 ===== */
-.fixed-bottom-buttons {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20rpx 32rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background: var(--color-bg-card);
-  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
-  z-index: 100;
-  display: flex;
-  gap: 12rpx;
-}
-
-.back-button, .add-button {
-  flex: 1;
-  background: #EFEFEF;
-  border-radius: var(--radius-button);
-  padding: 24rpx 0;
-  text-align: center;
-  font-size: var(--font-body);
-  font-weight: 500;
-  letter-spacing: 0.5rpx;
-  color: var(--color-text-normal);
-  transition: opacity 0.2s ease;
-}
-
-.add-button {
-  background: var(--color-primary);
-  color: #FFFFFF;
-}
-
-.back-button:active, .add-button:active {
-  opacity: 0.8;
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
 }

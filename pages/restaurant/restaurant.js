@@ -1,4 +1,7 @@
-// pages/restaurant/restaurant.js - 添加分享功能
+// pages/restaurant/restaurant.js
+// 餐厅详情页
+
+const api = require('../../utils/api')
 
 Page({
   data: {
@@ -6,133 +9,159 @@ Page({
     restaurantName: '',
     restaurantAddress: '',
     restaurantTags: [],
-    currentFilter: 'all',
+    
+    // 筛选
+    currentFilter: 'all', // all | must-try | avoid
+    
+    // 菜品列表
+    allDishes: [],
     mustTryDishes: [],
     avoidDishes: [],
+    
+    loading: false
   },
 
   onLoad(options) {
-    const id = options.id || '';
-    const name = decodeURIComponent(options.name || '');
-
+    const { id, name } = options
+    
     if (!id) {
-      wx.showToast({
-        title: '参数错误',
-        icon: 'none'
-      });
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
-      return;
+      wx.showToast({ title: '参数错误', icon: 'none' })
+      setTimeout(() => wx.navigateBack(), 1500)
+      return
     }
-
+    
     this.setData({
       restaurantId: id,
-      restaurantName: name
-    });
-
-    this.loadRestaurantDetail();
-    this.loadDishes();
-  },
-
-  loadRestaurantDetail() {
-    const db = wx.cloud.database();
-    db.collection('restaurants')
-      .doc(this.data.restaurantId)
-      .get()
-      .then(res => {
-        this.setData({
-          restaurantAddress: res.data.address || '',
-          restaurantTags: res.data.tags || []
-        });
-      })
-      .catch(err => {
-        console.error('加载餐厅详情失败', err);
-      });
-  },
-
-  loadDishes() {
-    const db = wx.cloud.database();
-    db.collection('dishes')
-      .where({
-        restaurantId: this.data.restaurantId
-      })
-      .orderBy('createTime', 'desc')
-      .get()
-      .then(res => {
-        const dishes = res.data.map(item => {
-          return {
-            ...item,
-            dishChar: this.getDishChar(item.dishName)
-          };
-        });
-
-        const mustTry = dishes.filter(dish => dish.rating === 'must-try');
-        const avoid = dishes.filter(dish => dish.rating === 'avoid');
-
-        this.setData({
-          mustTryDishes: mustTry,
-          avoidDishes: avoid
-        });
-      })
-      .catch(err => {
-        console.error('加载菜品失败', err);
-      });
-  },
-
-  getDishChar(name) {
-    if (!name) return '菜';
-    return name.charAt(0);
-  },
-
-  onBack() {
-    wx.navigateBack();
-  },
-
-  goToAddDishes() {
-    const { restaurantId, restaurantName } = this.data;
-    wx.navigateTo({
-      url: `/pages/add-dishes/add-dishes?restaurantId=${restaurantId}&restaurantName=${encodeURIComponent(restaurantName)}`
-    });
-  },
-
-  onFilterChange(e) {
-    const { filter } = e.currentTarget.dataset;
-    this.setData({
-      currentFilter: filter
-    });
-  },
-
-  onViewDish(e) {
-    const { id, name, rating, photo, note } = e.currentTarget.dataset;
-    const { restaurantId, restaurantName } = this.data;
+      restaurantName: decodeURIComponent(name || '')
+    })
     
-    wx.navigateTo({
-      url: `/pages/dish/dish?id=${id}&name=${encodeURIComponent(name)}&rating=${rating}&photos=${encodeURIComponent(photo || '')}&note=${encodeURIComponent(note || '')}&restaurantId=${restaurantId}&restaurantName=${encodeURIComponent(restaurantName)}`
-    });
-  },
-
-  onEditRestaurant() {
-    const { restaurantId, restaurantName, restaurantAddress } = this.data;
-    wx.navigateTo({
-      url: `/pages/edit-restaurant/edit-restaurant?id=${restaurantId}&name=${encodeURIComponent(restaurantName)}&address=${encodeURIComponent(restaurantAddress)}`
-    });
+    this.loadRestaurantDetail()
+    this.loadDishes()
   },
 
   onShow() {
+    // 从其他页面返回时刷新菜品列表
     if (this.data.restaurantId) {
-      this.loadDishes();
+      this.loadDishes()
     }
   },
 
   /**
-   * 分享功能 - 跳转到海报页
+   * 下拉刷新
    */
-  onShareAppMessage() {
-    return {
-      title: `推荐${this.data.restaurantName}，这些菜必点！`,
-      path: `/pages/share-poster/share-poster?id=${this.data.restaurantId}`,
-      imageUrl: '' // 使用页面截图
-    };
+  onPullDownRefresh() {
+    Promise.all([
+      this.loadRestaurantDetail(),
+      this.loadDishes()
+    ]).then(() => {
+      wx.stopPullDownRefresh()
+    })
+  },
+
+  /**
+   * 加载餐厅详情
+   */
+  async loadRestaurantDetail() {
+    try {
+      const res = await api.getRestaurantDetail(this.data.restaurantId)
+      const restaurant = res.data
+      
+      this.setData({
+        restaurantName: restaurant.name,
+        restaurantAddress: restaurant.address || '',
+        restaurantTags: restaurant.tags || []
+      })
+    } catch (error) {
+      console.error('加载餐厅详情失败:', error)
+    }
+  },
+
+  /**
+   * 加载菜品列表
+   */
+  async loadDishes() {
+    if (this.data.loading) return
+    
+    this.setData({ loading: true })
+    
+    try {
+      const res = await api.getDishList({
+        restaurantId: this.data.restaurantId,
+        limit: 100
+      })
+      
+      const dishes = res.data.list || []
+      
+      // 添加首字符
+      const processedDishes = dishes.map(item => ({
+        ...item,
+        dishChar: this.getDishChar(item.dishName)
+      }))
+      
+      // 按评分分类
+      const mustTry = processedDishes.filter(d => d.rating === 'must-try')
+      const avoid = processedDishes.filter(d => d.rating === 'avoid')
+      
+      this.setData({
+        allDishes: processedDishes,
+        mustTryDishes: mustTry,
+        avoidDishes: avoid,
+        loading: false
+      })
+    } catch (error) {
+      console.error('加载菜品失败:', error)
+      this.setData({ loading: false })
+    }
+  },
+
+  /**
+   * 生成菜品首字符
+   */
+  getDishChar(name) {
+    if (!name) return '菜'
+    return name.charAt(0)
+  },
+
+  /**
+   * 切换筛选
+   */
+  onFilterChange(e) {
+    const { filter } = e.currentTarget.dataset
+    this.setData({ currentFilter: filter })
+  },
+
+  /**
+   * 查看菜品详情
+   */
+  onViewDish(e) {
+    const { id, name, rating } = e.currentTarget.dataset
+    wx.navigateTo({
+      url: `/pages/dish/dish?id=${id}&name=${encodeURIComponent(name)}&rating=${rating}&restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurantName)}`
+    })
+  },
+
+  /**
+   * 编辑餐厅
+   */
+  onEditRestaurant() {
+    wx.navigateTo({
+      url: `/pages/edit-restaurant/edit-restaurant?id=${this.data.restaurantId}`
+    })
+  },
+
+  /**
+   * 新增菜品
+   */
+  goToAddDishes() {
+    wx.navigateTo({
+      url: `/pages/add-dishes/add-dishes?restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurantName)}`
+    })
+  },
+
+  /**
+   * 返回
+   */
+  onBack() {
+    wx.navigateBack()
   }
-});
+})

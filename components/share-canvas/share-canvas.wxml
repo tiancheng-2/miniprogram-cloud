@@ -1,7 +1,0 @@
-<!--components/share-canvas/share-canvas.wxml-->
-<canvas 
-  canvas-id="shareCanvas" 
-  id="shareCanvas"
-  style="width: 375px; height: 600px; position: fixed; left: -9999px; top: 0;"
-  type="2d"
-></canvas>

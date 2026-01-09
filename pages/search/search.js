@@ -1,185 +1,143 @@
 // pages/search/search.js
-const { debounce } = require('../../utils/debounce');
+// 搜索页面 - 防抖实现
+
+const api = require('../../utils/api')
 
 Page({
   data: {
-    searchKeyword: '',
+    keyword: '',
     restaurantResults: [],
     dishResults: [],
     hasResults: false,
-    isSearching: false,  // 搜索中状态
-    hasSearched: false   // 是否已搜索过
-  },
-
-  onLoad() {
-    // 创建防抖搜索函数
-    this.debouncedSearch = debounce(this.performSearch.bind(this), 500);
+    searching: false,
+    hasSearched: false,
+    
+    // 防抖timer
+    searchTimer: null
   },
 
   /**
-   * 搜索输入（防抖处理）
+   * 搜索输入（防抖500ms）
    */
   onSearchInput(e) {
-    const keyword = e.detail.value.trim();
-    this.setData({
-      searchKeyword: keyword
-    });
-
-    if (keyword) {
-      // 显示搜索中状态
-      this.setData({ isSearching: true });
-      // 防抖执行搜索
-      this.debouncedSearch(keyword);
-    } else {
-      // 清空结果
+    const keyword = e.detail.value.trim()
+    this.setData({ keyword })
+    
+    // 清空之前的timer
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer)
+    }
+    
+    if (!keyword) {
       this.setData({
         restaurantResults: [],
         dishResults: [],
         hasResults: false,
-        isSearching: false,
+        searching: false,
         hasSearched: false
-      });
+      })
+      return
     }
+    
+    // 显示搜索中状态
+    this.setData({ searching: true })
+    
+    // 防抖：500ms后执行搜索
+    const timer = setTimeout(() => {
+      this.performSearch(keyword)
+    }, 500)
+    
+    this.setData({ searchTimer: timer })
   },
 
   /**
    * 执行搜索
    */
-  performSearch(keyword) {
-    const db = wx.cloud.database();
-
-    Promise.all([
-      // 搜索餐厅名称
-      db.collection('restaurants')
-        .where({
-          name: db.RegExp({
-            regexp: keyword,
-            options: 'i'
-          })
-        })
-        .limit(20)  // 限制结果数量
-        .get(),
+  async performSearch(keyword) {
+    if (!keyword) return
+    
+    try {
+      // 并行搜索餐厅和菜品
+      const [restaurantRes, dishRes] = await Promise.all([
+        api.getRestaurantList({ keyword, limit: 20 }),
+        api.getDishList({ keyword, limit: 20 })
+      ])
       
-      // 搜索餐厅地址
-      db.collection('restaurants')
-        .where({
-          address: db.RegExp({
-            regexp: keyword,
-            options: 'i'
-          })
-        })
-        .limit(20)
-        .get(),
+      const restaurants = restaurantRes.data.list || []
+      const dishes = dishRes.data.list || []
       
-      // 搜索菜品
-      db.collection('dishes')
-        .where({
-          dishName: db.RegExp({
-            regexp: keyword,
-            options: 'i'
-          })
-        })
-        .limit(20)
-        .get()
-    ])
-    .then(results => {
-      const [restaurantNameRes, restaurantAddressRes, dishRes] = results;
-
-      // 合并餐厅结果（去重）
-      const restaurantMap = {};
+      // 为菜品获取餐厅名称
+      const dishesWithRestaurant = await this.enrichDishesWithRestaurant(dishes)
       
-      restaurantNameRes.data.forEach(item => {
-        restaurantMap[item._id] = {
-          type: 'restaurant',
-          id: item._id,
-          name: item.name,
-          address: item.address || ''
-        };
-      });
-      
-      restaurantAddressRes.data.forEach(item => {
-        restaurantMap[item._id] = {
-          type: 'restaurant',
-          id: item._id,
-          name: item.name,
-          address: item.address || ''
-        };
-      });
-
-      const restaurants = Object.values(restaurantMap);
-
-      // 处理菜品结果
-      const dishIds = dishRes.data.map(d => d.restaurantId);
-      
-      if (dishIds.length > 0) {
-        // 获取餐厅信息
-        const _ = db.command;
-        return db.collection('restaurants')
-          .where({
-            _id: _.in(dishIds)
-          })
-          .get()
-          .then(restaurantRes => {
-            const restaurantNameMap = {};
-            restaurantRes.data.forEach(r => {
-              restaurantNameMap[r._id] = r.name;
-            });
-
-            const dishes = dishRes.data.map(item => ({
-              type: 'dish',
-              id: item._id,
-              name: item.dishName,
-              rating: item.rating,
-              photoUrl: item.photoUrl || '',
-              note: item.note || '',
-              restaurantId: item.restaurantId,
-              restaurantName: restaurantNameMap[item.restaurantId] || '未知餐厅'
-            }));
-
-            return { restaurants, dishes };
-          });
-      } else {
-        return { restaurants, dishes: [] };
-      }
-    })
-    .then(data => {
       this.setData({
-        restaurantResults: data.restaurants,
-        dishResults: data.dishes,
-        hasResults: data.restaurants.length > 0 || data.dishes.length > 0,
-        isSearching: false,
+        restaurantResults: restaurants,
+        dishResults: dishesWithRestaurant,
+        hasResults: restaurants.length > 0 || dishes.length > 0,
+        searching: false,
         hasSearched: true
-      });
-    })
-    .catch(err => {
-      console.error('搜索失败', err);
+      })
+    } catch (error) {
+      console.error('搜索失败:', error)
       this.setData({
-        isSearching: false,
+        searching: false,
         hasSearched: true
-      });
-      wx.showToast({
-        title: '搜索失败',
-        icon: 'none'
-      });
-    });
+      })
+    }
   },
 
   /**
-   * 选择结果
+   * 为菜品补充餐厅名称
+   */
+  async enrichDishesWithRestaurant(dishes) {
+    if (dishes.length === 0) return []
+    
+    // 获取所有唯一的餐厅ID
+    const restaurantIds = [...new Set(dishes.map(d => d.restaurantId))]
+    
+    // 批量获取餐厅信息
+    const restaurantMap = {}
+    await Promise.all(
+      restaurantIds.map(async (id) => {
+        try {
+          const res = await api.getRestaurantDetail(id)
+          restaurantMap[id] = res.data.name
+        } catch (error) {
+          restaurantMap[id] = '未知餐厅'
+        }
+      })
+    )
+    
+    // 补充餐厅名称
+    return dishes.map(dish => ({
+      ...dish,
+      restaurantName: restaurantMap[dish.restaurantId] || '未知餐厅'
+    }))
+  },
+
+  /**
+   * 选择搜索结果
    */
   onSelectResult(e) {
-    const { type, id, name, rating, photo, note, restaurantId, restaurantName } = e.currentTarget.dataset;
-
+    const { type, id, name } = e.currentTarget.dataset
+    
     if (type === 'restaurant') {
-      // 跳转到餐厅详情页
       wx.navigateTo({
         url: `/pages/restaurant/restaurant?id=${id}&name=${encodeURIComponent(name)}`
-      });
+      })
     } else if (type === 'dish') {
-      // 跳转到菜品详情页
+      const { rating, restaurantId, restaurantName } = e.currentTarget.dataset
       wx.navigateTo({
-        url: `/pages/dish/dish?id=${id}&name=${encodeURIComponent(name)}&rating=${rating}&photos=${encodeURIComponent(photo || '')}&note=${encodeURIComponent(note || '')}&restaurantId=${restaurantId}&restaurantName=${encodeURIComponent(restaurantName)}`
-      });
+        url: `/pages/dish/dish?id=${id}&name=${encodeURIComponent(name)}&rating=${rating}&restaurantId=${restaurantId}&restaurantName=${encodeURIComponent(restaurantName)}`
+      })
+    }
+  },
+
+  /**
+   * 页面卸载时清除timer
+   */
+  onUnload() {
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer)
     }
   }
-});
+})

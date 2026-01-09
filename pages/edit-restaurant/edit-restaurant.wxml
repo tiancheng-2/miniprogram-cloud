@@ -5,11 +5,12 @@
     <!-- 餐厅名称 -->
     <view class="form-item">
       <view class="form-label">
-        餐厅名称
+        <text>餐厅名称</text>
+        <text class="required">*</text>
         <text class="char-count">{{restaurantName.length}}/15</text>
       </view>
       <input 
-        class="form-input" 
+        class="input" 
         placeholder="请输入餐厅名称" 
         value="{{restaurantName}}" 
         bindinput="onNameInput"
@@ -19,32 +20,33 @@
 
     <!-- 餐厅地址 -->
     <view class="form-item">
-  <view class="form-label">
-    餐厅地址（可选）
-    <text class="char-count">{{restaurantAddress.length}}/30</text>
-  </view>
-  <textarea 
-    class="form-textarea" 
-    placeholder="请输入餐厅地址" 
-    value="{{restaurantAddress}}" 
-    bindinput="onAddressInput"
-    maxlength="30"
-    auto-height
-  />
-</view>
+      <view class="form-label">
+        <text>餐厅地址</text>
+        <text class="char-count">选填 {{restaurantAddress.length}}/30</text>
+      </view>
+      <textarea 
+        class="textarea" 
+        placeholder="请输入餐厅地址" 
+        value="{{restaurantAddress}}" 
+        bindinput="onAddressInput"
+        maxlength="30"
+        auto-height
+      />
+    </view>
 
     <!-- 餐厅标签 -->
     <view class="form-item">
       <view class="form-label">
-        餐厅标签（可选）
-        <text class="char-count">{{restaurantTags.length}}/30</text>
+        <text>餐厅标签</text>
+        <text class="char-count">选填 {{restaurantTags.length}}/30</text>
       </view>
-      <input 
-        class="form-input" 
+      <textarea 
+        class="textarea" 
         placeholder="例如: 川菜 实惠 环境好（用空格分隔）" 
         value="{{restaurantTags}}" 
         bindinput="onTagsInput"
         maxlength="30"
+        auto-height
       />
     </view>
   </view>
@@ -52,22 +54,16 @@
   <!-- 底部占位 -->
   <view class="bottom-placeholder"></view>
 
-  <!-- 固定底部按钮 -->
+  <!-- 固定底部 -->
   <view class="fixed-bottom">
-    <!-- 取消和保存按钮并列一行 -->
+    <!-- 取消和保存按钮 -->
     <view class="action-buttons">
-      <view class="action-btn btn-cancel" bindtap="onCancel">
-        <text class="action-btn-text">取消</text>
-      </view>
-      <view class="action-btn btn-save" bindtap="onSave">
-        <text class="action-btn-text">保存</text>
-      </view>
+      <view class="btn btn-secondary" bindtap="onCancel">取消</view>
+      <view class="btn btn-primary" bindtap="onSave">保存</view>
     </view>
 
-    <!-- 删除按钮单独一行 -->
-    <view class="delete-btn" bindtap="onShowDeleteModal">
-      <text class="delete-btn-text">删除这家餐厅</text>
-    </view>
+    <!-- ✅ 修复：删除按钮独立一行，不加额外类名 -->
+    <view class="btn btn-danger" bindtap="onShowDeleteModal" style="width: 100%;">删除这家餐厅</view>
   </view>
 
   <!-- 删除确认弹窗 -->
@@ -76,12 +72,8 @@
       <view class="modal-title">确认删除</view>
       <view class="modal-desc">删除后无法恢复，餐厅及其所有菜品都将被删除</view>
       <view class="modal-actions">
-        <view class="modal-btn modal-btn-cancel" bindtap="onHideDeleteModal">
-          <text class="modal-btn-text">取消</text>
-        </view>
-        <view class="modal-btn modal-btn-confirm" bindtap="onConfirmDelete">
-          <text class="modal-btn-text">确认删除</text>
-        </view>
+        <view class="btn btn-secondary" bindtap="onHideDeleteModal">取消</view>
+        <view class="btn btn-danger" bindtap="onConfirmDelete">确认删除</view>
       </view>
     </view>
   </view>

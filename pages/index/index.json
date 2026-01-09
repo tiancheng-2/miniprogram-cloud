@@ -1,6 +1,6 @@
 {
-  "usingComponents": {},
   "navigationBarTitleText": "味觉空间",
-  "enablePullDownRefresh": true,
-  "backgroundColor": "#F6F7F8"
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#F9F9F9",
+  "usingComponents": {}
 }

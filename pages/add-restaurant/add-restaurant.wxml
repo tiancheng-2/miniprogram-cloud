@@ -1,22 +1,17 @@
 <!--pages/add-restaurant/add-restaurant.wxml-->
 <view class="container">
-  <!-- 头部 -->
-  <view class="header">
-    <view class="header-title">记录新餐厅</view>
-    <view class="header-subtitle">记录下你的美食发现</view>
-  </view>
-
-  <!-- 餐厅信息卡片 -->
-  <view class="form-card">
-    <view class="card-title">餐厅信息</view>
+  <!-- 餐厅信息表单 -->
+  <view class="section">
+    <view class="section-title">餐厅信息</view>
     
     <view class="form-item">
       <view class="form-label">
         <text>餐厅名称</text>
+        <text class="required">*</text>
         <text class="char-count">{{restaurantName.length}}/15</text>
       </view>
       <input 
-        class="form-input" 
+        class="input" 
         placeholder="请输入餐厅名称" 
         value="{{restaurantName}}" 
         bindinput="onNameInput"
@@ -29,12 +24,13 @@
         <text>餐厅地址</text>
         <text class="char-count">选填 {{restaurantAddress.length}}/30</text>
       </view>
-      <input 
-        class="form-input" 
-        placeholder="请输入餐厅地址（选填）" 
+      <textarea 
+        class="textarea" 
+        placeholder="请输入餐厅地址" 
         value="{{restaurantAddress}}" 
         bindinput="onAddressInput"
         maxlength="30"
+        auto-height
       />
     </view>
 
@@ -43,22 +39,23 @@
         <text>餐厅标签</text>
         <text class="char-count">选填 {{restaurantTags.length}}/30</text>
       </view>
-      <input 
-        class="form-input" 
+      <textarea 
+        class="textarea" 
         placeholder="例如: 川菜 实惠 环境好（用空格分隔）" 
         value="{{restaurantTags}}" 
-        bindinput="onRestaurantTagsInput"
+        bindinput="onTagsInput"
         maxlength="30"
+        auto-height
       />
     </view>
   </view>
 
-  <!-- 菜品记录卡片 -->
-  <view class="form-card">
-    <view class="card-title">菜品记录</view>
+  <!-- 菜品列表 -->
+  <view class="section">
+    <view class="section-title">菜品记录</view>
     
     <view 
-      class="dish-item" 
+      class="dish-form" 
       wx:for="{{dishes}}" 
       wx:key="index"
       wx:for-index="index"
@@ -69,12 +66,12 @@
       <view class="form-item">
         <view class="form-label">
           <text>菜品名称</text>
-          <text class="char-count">{{item.name.length}}/20</text>
+          <text class="char-count">{{item.dishName.length}}/20</text>
         </view>
         <input 
-          class="form-input" 
+          class="input" 
           placeholder="请输入菜品名称" 
-          value="{{item.name}}" 
+          value="{{item.dishName}}" 
           bindinput="onDishNameInput"
           bindblur="onDishNameBlur"
           data-index="{{index}}"
@@ -82,52 +79,54 @@
         />
       </view>
 
-      <!-- 评价 -->
+      <!-- 评分 -->
       <view class="form-item">
-        <view class="form-label">
-          <text>评价</text>
-        </view>
+        <view class="form-label">评价</view>
         <view class="rating-buttons">
           <view 
-            class="rating-btn must {{item.rating === 'must-try' ? 'active' : ''}}" 
+            class="rating-btn {{item.rating === 'must-try' ? 'active must' : ''}}" 
             bindtap="onSelectRating" 
             data-index="{{index}}"
             data-rating="must-try"
-          >👍 必点</view>
+          >
+            <text class="rating-text">👍 必点</text>
+          </view>
           <view 
-            class="rating-btn avoid {{item.rating === 'avoid' ? 'active' : ''}}" 
+            class="rating-btn {{item.rating === 'avoid' ? 'active avoid' : ''}}" 
             bindtap="onSelectRating" 
             data-index="{{index}}"
             data-rating="avoid"
-          >⚠️ 避坑</view>
+          >
+            <text class="rating-text">⚠️ 避坑</text>
+          </view>
         </view>
       </view>
 
       <!-- 菜品笔记 -->
-<view class="form-item">
-  <view class="form-label">
-    <text>菜品笔记</text>
-    <text class="char-count">选填 {{item.note.length}}/25</text>
-  </view>
-  <textarea 
-    class="form-textarea" 
-    placeholder="记录一下你的感受（选填）" 
-    value="{{item.note}}" 
-    bindinput="onDishNoteInput"
-    data-index="{{index}}"
-    maxlength="25"
-    auto-height
-  />
-</view>
+      <view class="form-item">
+        <view class="form-label">
+          <text>菜品笔记</text>
+          <text class="char-count">选填 {{item.note.length}}/25</text>
+        </view>
+        <textarea 
+          class="textarea" 
+          placeholder="记录一下你的感受" 
+          value="{{item.note}}" 
+          bindinput="onDishNoteInput"
+          data-index="{{index}}"
+          maxlength="25"
+          auto-height
+        />
+      </view>
 
-<!-- 菜品标签 -->
-<view class="form-item">
+      <!-- 菜品标签 -->
+      <view class="form-item">
         <view class="form-label">
           <text>菜品标签</text>
-          <text class="char-count">选填 {{item.tags ? item.tags.length : 0}}/30</text>
+          <text class="char-count">选填 {{item.tags.length}}/30</text>
         </view>
         <input 
-          class="form-input" 
+          class="input" 
           placeholder="例如: 辣 招牌（用空格分隔）" 
           value="{{item.tags}}" 
           bindinput="onDishTagsInput"
@@ -136,21 +135,17 @@
         />
       </view>
 
-      <!-- 菜品照片上传 - 新增 -->
+      <!-- 菜品照片 -->
       <view class="form-item">
-        <view class="form-label">
-          <text>菜品照片（可选）</text>
-        </view>
+        <view class="form-label">菜品照片（可选）</view>
         
-        <!-- 已上传照片预览 -->
         <view wx:if="{{item.photoUrl}}" class="photo-preview">
           <image class="photo-image" src="{{item.photoUrl}}" mode="aspectFill"></image>
-          <view class="photo-delete" bindtap="onDeleteDishPhoto" data-index="{{index}}">
+          <view class="photo-delete" bindtap="onDeleteDishPhoto" data-index="{{index}}" catchtap>
             <text class="delete-icon">✕</text>
           </view>
         </view>
         
-        <!-- 上传按钮 -->
         <view wx:else class="photo-upload" bindtap="onChooseDishImage" data-index="{{index}}">
           <text class="upload-icon">📷</text>
           <text class="upload-text">添加照片</text>
@@ -159,15 +154,14 @@
     </view>
   </view>
 
-
   <!-- 底部占位 -->
   <view class="bottom-placeholder"></view>
 
   <!-- 固定底部按钮 -->
-  <view class="bottom-actions">
+  <view class="fixed-bottom">
     <view class="action-buttons">
-      <view class="action-btn cancel-btn" bindtap="onCancel">取消</view>
-      <view class="action-btn save-btn" bindtap="onSave">保存</view>
+      <view class="btn btn-secondary" bindtap="onCancel">取消</view>
+      <view class="btn btn-primary" bindtap="onSave">保存</view>
     </view>
   </view>
 </view>
