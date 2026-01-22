@@ -4,11 +4,13 @@
   <!-- Header 用户信息 -->
   <view class="profile-header">
     <view class="avatar-wrapper">
-      <image 
-        class="user-avatar" 
-        src="{{userInfo.avatarUrl || '/assets/default-avatar.png'}}" 
+      <image
+        wx:if="{{userInfo.avatarUrl}}"
+        class="user-avatar"
+        src="{{userInfo.avatarUrl}}"
         mode="aspectFill"
       ></image>
+      <view wx:else class="user-avatar user-avatar-placeholder"></view>
     </view>
     <text class="user-nickname">{{userInfo.nickName || '美食探索者'}}</text>
   </view>

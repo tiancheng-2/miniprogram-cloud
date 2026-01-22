@@ -1,5 +1,6 @@
 // pages/index/index.js
 const restaurantService = require('../../services/restaurantService');
+const cloudDB = require('../../utils/db');
 
 Page({
   /**
@@ -11,8 +12,8 @@ Page({
     
     // 统计数据
     stats: {
-      totalRestaurants: 32,
-      totalDishes: 128
+      totalRestaurants: 0,
+      totalDishes: 0
     },
     
     // 餐厅列表（Mock Data）
@@ -53,6 +54,13 @@ Page({
    */
   onLoad(options) {
     console.log('[Index] Page loaded');
+    
+    // ⭐ 确保 cloudDB 已初始化
+    if (!cloudDB.initialized) {
+      console.warn('[Index] CloudDB not initialized, initializing now...');
+      cloudDB.init('cloud1-7gvrjj1p6b9df8ee');
+    }
+    
     this.loadUserAvatar();
   },
 
@@ -89,31 +97,55 @@ Page({
    */
   async loadPageData() {
     try {
-      // TODO: 等云函数开发完成后，替换为真实数据
-      // const stats = await restaurantService.getHomeStats();
-      // const restaurants = await restaurantService.getRestaurants(0, 4);
+      console.log('[Index] Loading page data');
       
-      // 暂时使用 Mock 数据
-      console.log('[Index] Loading page data with mock data');
+      // ⭐ 再次检查初始化状态
+      if (!cloudDB.initialized) {
+        console.warn('[Index] CloudDB not initialized, using mock data');
+        this.setMockData();
+        return;
+      }
       
-      // 模拟网络延迟
-      setTimeout(() => {
-        this.setData({
-          stats: {
-            totalRestaurants: 32,
-            totalDishes: 128
-          }
-        });
-      }, 300);
+      // 加载真实数据
+      const stats = await restaurantService.getHomeStats();
+      const restaurants = await restaurantService.getRestaurants(0, 4);
+      
+      this.setData({
+        stats: {
+          totalRestaurants: stats.totalRestaurants || 0,
+          totalDishes: stats.totalDishes || 0
+        },
+        restaurants: restaurants || []
+      });
+      
+      console.log('[Index] Real data loaded successfully');
       
     } catch (error) {
       console.error('[Index] Load page data failed:', error);
+      
+      // 加载失败时使用 Mock 数据
+      console.log('[Index] Falling back to mock data');
+      this.setMockData();
+      
       wx.showToast({
-        title: '加载失败',
+        title: '加载失败，显示示例数据',
         icon: 'none',
         duration: 2000
       });
     }
+  },
+
+  /**
+   * 设置 Mock 数据
+   */
+  setMockData() {
+    this.setData({
+      stats: {
+        totalRestaurants: 32,
+        totalDishes: 128
+      }
+    });
+    console.log('[Index] Mock data set');
   },
 
   /**
@@ -125,7 +157,6 @@ Page({
       type: 'light'
     });
     
-    // TODO: 跳转到餐厅列表页
     wx.showToast({
       title: '功能开发中',
       icon: 'none',
@@ -145,10 +176,6 @@ Page({
     });
     
     // TODO: 跳转到餐厅详情页
-    // wx.navigateTo({
-    //   url: `/pages/restaurant/detail?id=${id}`
-    // });
-    
     wx.showToast({
       title: '跳转到餐厅详情',
       icon: 'none',
@@ -168,7 +195,7 @@ Page({
     
     // 跳转到添加餐厅页面
     wx.navigateTo({
-      url: '/pages/add-restaurant/add-restaurant'
+      url: '/pages/add/index'
     });
   },
 
@@ -196,7 +223,6 @@ Page({
   onReachBottom() {
     console.log('[Index] Reach bottom');
     
-    // TODO: 实现分页加载
     wx.showToast({
       title: '加载更多',
       icon: 'none',

@@ -159,3 +159,19 @@ image {
 .fab:active {
   transform: scale(0.95);
 }
+
+/* Avatar Placeholders */
+.header-avatar-placeholder,
+.user-avatar-placeholder {
+  background: linear-gradient(135deg, #E8E8ED 0%, #D1D1D6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-avatar-placeholder::before,
+.user-avatar-placeholder::before {
+  content: '👤';
+  font-size: 32rpx;
+  opacity: 0.5;
+}

@@ -1,2 +1,80 @@
 <!--pages/dish/dish.wxml-->
-<text>pages/dish/dish.wxml</text>
+<view class="page-container">
+
+  <!-- Hero Area 顶部沉浸区 -->
+  <view class="hero-area">
+    <!-- 菜品图片 -->
+    <image
+      class="hero-image"
+      src="{{dish.photoUrl || 'https://placehold.co/600x600/F2F2F7/8E8E93?text=Dish'}}"
+      mode="aspectFill"
+      lazy-load="{{true}}"
+    ></image>
+
+    <!-- 渐变遮罩 -->
+    <view class="hero-mask"></view>
+
+    <!-- 评分标记 -->
+    <view class="dish-badge {{dish.rating}}">
+      <text class="badge-text">
+        {{dish.rating === 'must-try' ? '👍 必点' : '⚠️ 避坑'}}
+      </text>
+    </view>
+
+    <!-- 菜品基本信息 -->
+    <view class="hero-content">
+      <text class="dish-name">{{dish.dishName || dish.name || '加载中...'}}</text>
+    </view>
+  </view>
+
+  <!-- Info Sheet 悬浮信息卡 -->
+  <view class="info-sheet">
+    <!-- 餐厅信息 -->
+    <view class="info-item" bindtap="onNavigateToRestaurant">
+      <view class="info-icon">🍽️</view>
+      <view class="info-content">
+        <text class="info-text">{{restaurantName || '餐厅'}}</text>
+        <text class="info-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 笔记 -->
+    <view class="info-item" wx:if="{{dish.note}}">
+      <view class="info-icon">📝</view>
+      <view class="info-content">
+        <text class="info-text">{{dish.note}}</text>
+      </view>
+    </view>
+
+    <!-- 标签 -->
+    <view class="info-tags" wx:if="{{dish.tags && dish.tags.length > 0}}">
+      <view class="tag" wx:for="{{dish.tags}}" wx:key="index">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-spacer"></view>
+
+  <!-- Action Bar 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-buttons">
+      <!-- 分享按钮 -->
+      <button class="action-btn secondary" open-type="share">
+        <text class="action-icon">↗</text>
+      </button>
+
+      <!-- 编辑按钮 -->
+      <view class="action-btn primary" bindtap="onEdit">
+        <text class="action-text">编辑</text>
+      </view>
+
+      <!-- 删除按钮 -->
+      <view class="action-btn danger" bindtap="onDelete">
+        <text class="action-text">删除</text>
+      </view>
+    </view>
+  </view>
+
+</view>

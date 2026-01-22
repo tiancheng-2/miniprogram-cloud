@@ -1,2 +1,44 @@
 <!--pages/edit-restaurant/edit-restaurant.wxml-->
-<text>pages/edit-restaurant/edit-restaurant.wxml</text>
+<view class="page-container">
+
+  <!-- 餐厅名称输入框 -->
+  <view class="restaurant-name-section">
+    <input
+      class="restaurant-name-input"
+      model:value="{{name}}"
+      placeholder="Restaurant Name"
+      placeholder-class="name-placeholder"
+      maxlength="50"
+      confirm-type="next"
+    />
+  </view>
+
+  <!-- 标签选择器 -->
+  <view class="tags-section">
+    <text class="section-label">Tags</text>
+    <scroll-view class="tags-scroll" scroll-x show-scrollbar="{{false}}">
+      <view class="tags-container">
+        <view
+          class="tag-item {{item.selected ? 'tag-selected' : ''}}"
+          wx:for="{{tags}}"
+          wx:key="label"
+          bindtap="onToggleTag"
+          data-index="{{index}}"
+        >
+          <text class="tag-text">{{item.label}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-spacer"></view>
+
+  <!-- 保存按钮（固定在底部） -->
+  <view class="save-button-container">
+    <button class="save-button" bindtap="onSave">
+      <text class="save-button-text">Save</text>
+    </button>
+  </view>
+
+</view>

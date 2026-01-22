@@ -130,9 +130,9 @@ Page({
         latitude,
         
         // 标记点图标（使用默认红色大头针）
-        iconPath: '/assets/marker-red.png',  // 可以自定义图标
-        width: 40,
-        height: 40,
+        // iconPath: '/assets/marker-red.png',  // 使用默认标记点
+        // width: 40,
+        // height: 40,
         
         // 气泡（Callout）配置
         callout: {
@@ -344,9 +344,9 @@ Page({
    */
   onNavigateToAdd() {
     wx.vibrateShort({ type: 'medium' })
-    
+
     wx.navigateTo({
-      url: '/pages/add-restaurant/add-restaurant'
+      url: '/pages/add/index'
     })
   },
 

@@ -1,0 +1,145 @@
+/* pages/edit-restaurant/edit-restaurant.wxss */
+
+/* ==================== Page Container ==================== */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 40rpx var(--page-padding);
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+/* ==================== Restaurant Name Section ==================== */
+.restaurant-name-section {
+  margin-bottom: 64rpx;
+}
+
+.restaurant-name-input {
+  width: 100%;
+  font-size: 56rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+  border: none;
+  outline: none;
+  padding: 0;
+  background-color: transparent;
+}
+
+.restaurant-name-input:focus {
+  outline: none;
+}
+
+.name-placeholder {
+  color: #E5E5EA;
+  font-weight: 700;
+}
+
+/* ==================== Tags Section ==================== */
+.tags-section {
+  margin-bottom: 64rpx;
+}
+
+.section-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 24rpx;
+}
+
+.tags-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.tags-container {
+  display: inline-flex;
+  gap: 16rpx;
+  padding-bottom: 8rpx;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 32rpx;
+  background-color: #F2F2F7;
+  border-radius: 999rpx;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.tag-item:active {
+  transform: scale(0.95);
+}
+
+.tag-selected {
+  background-color: #000000;
+}
+
+.tag-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.tag-selected .tag-text {
+  color: #FFFFFF;
+}
+
+/* ==================== Bottom Spacer ==================== */
+.bottom-spacer {
+  height: 40rpx;
+}
+
+/* ==================== Save Button ==================== */
+.save-button-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx var(--page-padding);
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 100%);
+  z-index: 100;
+}
+
+.save-button {
+  width: 100%;
+  height: 88rpx;
+  background-color: #000000;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.save-button::after {
+  border: none;
+}
+
+.save-button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.save-button-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.5rpx;
+}
+
+/* ==================== Input Focus States ==================== */
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input:focus {
+  outline: none;
+}
