@@ -1,0 +1,229 @@
+/* pages/index/index.wxss */
+
+/* ==================== Header 顶部栏 ==================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 48rpx;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.header-welcome {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.header-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: -0.5rpx;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.header-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background-color: var(--bg-color-secondary);
+  overflow: hidden;
+}
+
+.header-notification {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-icon {
+  font-size: 40rpx;
+  opacity: 0.6;
+}
+
+/* ==================== Stats Card 统计卡片 ==================== */
+.stats-card {
+  background: var(--card-gradient);
+  border-radius: var(--radius-lg);
+  padding: 48rpx 40rpx;
+  margin-bottom: 48rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.stats-number {
+  font-size: var(--font-size-xxl);
+  color: var(--text-main);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2rpx;
+}
+
+.stats-label {
+  font-size: var(--font-size-md);
+  color: var(--text-main);
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.stats-divider {
+  width: 2rpx;
+  height: 80rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 0 24rpx;
+}
+
+/* ==================== Food Section 美食区域 ==================== */
+.food-section {
+  margin-bottom: 40rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: -0.5rpx;
+}
+
+.section-link {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+.section-link:active {
+  opacity: 0.6;
+}
+
+/* ==================== Food Grid 美食网格 ==================== */
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--card-gap);
+}
+
+.food-card {
+  background: var(--bg-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.food-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: var(--shadow-md);
+}
+
+/* 图片区域 */
+.food-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* 1:1 比例 */
+  background-color: var(--bg-color-secondary);
+  overflow: hidden;
+}
+
+.food-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 评分胶囊 */
+.food-rating {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8rpx);
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.rating-star {
+  font-size: 24rpx;
+  color: #FFB800;
+  line-height: 1;
+}
+
+.rating-score {
+  font-size: var(--font-size-xs);
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 信息区域 */
+.food-info {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.food-name {
+  font-size: var(--font-size-md);
+  color: var(--text-main);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.food-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.food-tag {
+  padding: 6rpx 16rpx;
+  background-color: var(--bg-color-secondary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+}
+
+/* ==================== FAB 悬浮按钮 ==================== */
+/* 已在 app.wxss 中定义全局样式 */

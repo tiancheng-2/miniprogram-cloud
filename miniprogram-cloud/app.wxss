@@ -1,0 +1,161 @@
+/* app.wxss - 全局样式配置 */
+
+/* ==================== Design Tokens ==================== */
+page {
+  /* Colors */
+  --bg-color: #FFFFFF;
+  --bg-color-secondary: #F9F9F9;
+  --text-main: #000000;
+  --text-secondary: #8E8E93;
+  --accent-color: #000000;
+  --card-gradient: linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%);
+  
+  /* Spacing */
+  --page-padding: 40rpx;
+  --card-gap: 24rpx;
+  
+  /* Radius */
+  --radius-lg: 32rpx;
+  --radius-md: 24rpx;
+  --radius-sm: 16rpx;
+  
+  /* Typography */
+  --font-size-xxl: 96rpx;
+  --font-size-xl: 48rpx;
+  --font-size-lg: 36rpx;
+  --font-size-md: 28rpx;
+  --font-size-sm: 24rpx;
+  --font-size-xs: 20rpx;
+  
+  /* Shadows */
+  --shadow-sm: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16rpx 48rpx rgba(0, 0, 0, 0.16);
+  
+  /* Global Settings */
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+  box-sizing: border-box;
+}
+
+/* ==================== Reset ==================== */
+view, text, image, input, textarea, button, scroll-view {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button::after {
+  border: none;
+}
+
+image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==================== Common Components ==================== */
+
+/* Page Container */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: var(--page-padding);
+  padding-bottom: calc(var(--page-padding) + 120rpx);
+}
+
+/* Card Base */
+.card {
+  background: var(--bg-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Text Styles */
+.text-main {
+  color: var(--text-main);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+/* Flex Utilities */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Grid Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--card-gap);
+}
+
+/* Button */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 48rpx;
+  border-radius: var(--radius-md);
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  border: none;
+  transition: opacity 0.3s ease;
+}
+
+.btn:active {
+  opacity: 0.8;
+}
+
+/* FAB (Floating Action Button) */
+.fab {
+  position: fixed;
+  right: var(--page-padding);
+  bottom: calc(var(--page-padding) + 40rpx);
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+  font-size: 64rpx;
+  font-weight: 300;
+  line-height: 1;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
