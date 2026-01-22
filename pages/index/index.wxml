@@ -8,7 +8,8 @@
       <text class="header-title">你好，美食家</text>
     </view>
     <view class="header-right">
-      <image class="header-avatar" src="{{userAvatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      <image wx:if="{{userAvatar}}" class="header-avatar" src="{{userAvatar}}" mode="aspectFill"></image>
+      <view wx:else class="header-avatar header-avatar-placeholder"></view>
       <view class="header-notification">
         <text class="notification-icon">🔔</text>
       </view>
@@ -36,23 +37,19 @@
     </view>
     
     <view class="food-grid">
-      <view 
-        class="food-card" 
-        wx:for="{{restaurants}}" 
-        wx:key="id"
+      <view
+        class="food-card"
+        wx:for="{{restaurants}}"
+        wx:key="_id"
         bindtap="onCardTap"
-        data-id="{{item.id}}"
+        data-id="{{item._id}}"
       >
         <view class="food-image-wrapper">
-          <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
-          <view class="food-rating">
-            <text class="rating-star">★</text>
-            <text class="rating-score">{{item.rating}}</text>
-          </view>
+          <image class="food-image" src="{{item.coverImage || 'https://placehold.co/400x400/F2F2F7/8E8E93?text=Restaurant'}}" mode="aspectFill"></image>
         </view>
         <view class="food-info">
           <text class="food-name">{{item.name}}</text>
-          <view class="food-tags">
+          <view class="food-tags" wx:if="{{item.tags && item.tags.length > 0}}">
             <text class="food-tag" wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">{{tag}}</text>
           </view>
         </view>

@@ -8,44 +8,15 @@ Page({
   data: {
     // 用户头像
     userAvatar: '',
-    
+
     // 统计数据
     stats: {
-      totalRestaurants: 32,
-      totalDishes: 128
+      totalRestaurants: 0,
+      totalDishes: 0
     },
-    
-    // 餐厅列表（Mock Data）
-    restaurants: [
-      {
-        id: 1,
-        name: 'Sushi Jiro',
-        image: 'https://placehold.co/400x400/e8f5e9/2e7d32?text=Sushi',
-        rating: '5.0',
-        tags: ['日料', '寿司']
-      },
-      {
-        id: 2,
-        name: 'Pasta Bar',
-        image: 'https://placehold.co/400x400/fff3e0/f57c00?text=Pasta',
-        rating: '4.8',
-        tags: ['意大利', '面食']
-      },
-      {
-        id: 3,
-        name: 'The Grill',
-        image: 'https://placehold.co/400x400/fce4ec/c2185b?text=Grill',
-        rating: '4.9',
-        tags: ['牛排', '西餐']
-      },
-      {
-        id: 4,
-        name: 'Golden Dragon',
-        image: 'https://placehold.co/400x400/fff9c4/f9a825?text=Dragon',
-        rating: '4.7',
-        tags: ['粤菜', '茶点']
-      }
-    ]
+
+    // 餐厅列表
+    restaurants: []
   },
 
   /**
@@ -89,25 +60,37 @@ Page({
    */
   async loadPageData() {
     try {
-      // TODO: 等云函数开发完成后，替换为真实数据
-      // const stats = await restaurantService.getHomeStats();
-      // const restaurants = await restaurantService.getRestaurants(0, 4);
-      
-      // 暂时使用 Mock 数据
-      console.log('[Index] Loading page data with mock data');
-      
-      // 模拟网络延迟
-      setTimeout(() => {
-        this.setData({
-          stats: {
-            totalRestaurants: 32,
-            totalDishes: 128
-          }
-        });
-      }, 300);
-      
+      console.log('[Index] Loading page data');
+
+      // 获取统计数据
+      const stats = await restaurantService.getHomeStats();
+
+      // 获取最近的餐厅列表
+      const restaurants = await restaurantService.getRestaurants(0, 4);
+
+      console.log('[Index] Stats:', stats);
+      console.log('[Index] Restaurants:', restaurants);
+
+      this.setData({
+        stats: {
+          totalRestaurants: stats.totalRestaurants || 0,
+          totalDishes: stats.totalDishes || 0
+        },
+        restaurants: restaurants
+      });
+
     } catch (error) {
       console.error('[Index] Load page data failed:', error);
+
+      // 加载失败时使用默认值
+      this.setData({
+        stats: {
+          totalRestaurants: 0,
+          totalDishes: 0
+        },
+        restaurants: []
+      });
+
       wx.showToast({
         title: '加载失败',
         icon: 'none',
@@ -139,20 +122,14 @@ Page({
   onCardTap(e) {
     const { id } = e.currentTarget.dataset;
     console.log('[Index] Card tapped:', id);
-    
+
     wx.vibrateShort({
       type: 'light'
     });
-    
-    // TODO: 跳转到餐厅详情页
-    // wx.navigateTo({
-    //   url: `/pages/restaurant/detail?id=${id}`
-    // });
-    
-    wx.showToast({
-      title: '跳转到餐厅详情',
-      icon: 'none',
-      duration: 1500
+
+    // 跳转到餐厅详情页
+    wx.navigateTo({
+      url: `/pages/detail/index?id=${id}`
     });
   },
 
@@ -168,7 +145,7 @@ Page({
     
     // 跳转到添加餐厅页面
     wx.navigateTo({
-      url: '/pages/add-restaurant/add-restaurant'
+      url: '/pages/add/index'
     });
   },
 
@@ -211,7 +188,7 @@ Page({
     return {
       title: '味觉空间 - 记录每一次美食体验',
       path: '/pages/index/index',
-      imageUrl: '/assets/share-cover.png'
+      imageUrl: 'https://placehold.co/400x400/FDFCFB/2C3E50?text=Taste+Space'
     };
   }
 });

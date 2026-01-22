@@ -93,7 +93,7 @@
         <view class="card-image">
           <image 
             class="cover-img" 
-            src="{{item.coverImage || '/assets/default-cover.jpg'}}" 
+            src="{{item.coverImage || 'https://placehold.co/400x400/F2F2F7/8E8E93?text=Restaurant'}}" 
             mode="aspectFill"
             lazy-load="{{true}}"
           ></image>

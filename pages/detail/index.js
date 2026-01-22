@@ -163,7 +163,7 @@ Page({
     
     // 跳转到菜品详情页
     wx.navigateTo({
-      url: `/pages/dish/index?id=${id}&restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurant.name)}`
+      url: `/pages/dish/dish?id=${id}&restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurant.name)}`
     })
   },
 
@@ -185,7 +185,7 @@ Page({
           // 编辑餐厅信息
           console.log('[Detail] Edit restaurant info')
           wx.navigateTo({
-            url: `/pages/edit-restaurant/index?id=${this.data.restaurantId}`
+            url: `/pages/edit-restaurant/edit-restaurant?id=${this.data.restaurantId}`
           })
         } else if (tapIndex === 1) {
           // 删除餐厅
@@ -270,7 +270,7 @@ Page({
     wx.vibrateShort({ type: 'medium' })
     
     wx.navigateTo({
-      url: `/pages/add-dishes/index?restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurant.name)}`
+      url: `/pages/add-dishes/add-dishes?restaurantId=${this.data.restaurantId}&restaurantName=${encodeURIComponent(this.data.restaurant.name)}`
     })
   },
 
@@ -290,7 +290,7 @@ Page({
     
     const sharePath = `/pages/detail/index?id=${restaurantId}&name=${encodeURIComponent(restaurant.name)}`
     
-    const shareImage = restaurant.coverImage || '/assets/share-default.png'
+    const shareImage = restaurant.coverImage || 'https://placehold.co/400x400/FDFCFB/2C3E50?text=Taste+Space'
     
     return {
       title: shareTitle,
@@ -324,7 +324,7 @@ Page({
     return {
       title: shareTitle,
       query: `id=${restaurantId}&name=${encodeURIComponent(restaurant.name)}`,
-      imageUrl: restaurant.coverImage || '/assets/share-default.png'
+      imageUrl: restaurant.coverImage || 'https://placehold.co/400x400/FDFCFB/2C3E50?text=Taste+Space'
     }
   },
 

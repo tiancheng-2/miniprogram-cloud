@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Read(//d/weijuekongjian/**)",
+      "Bash(dir:*)"
+    ],
+    "additionalDirectories": [
+      "d:\\weijuekongjian\\pages\\profile"
+    ]
+  }
+}

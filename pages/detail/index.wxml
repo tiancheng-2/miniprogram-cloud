@@ -6,7 +6,7 @@
     <!-- 餐厅封面图 -->
     <image 
       class="hero-image" 
-      src="{{restaurant.coverImage || '/assets/default-cover.jpg'}}" 
+      src="{{restaurant.coverImage || 'https://placehold.co/400x400/F2F2F7/8E8E93?text=Restaurant'}}" 
       mode="aspectFill"
       lazy-load="{{true}}"
     ></image>
@@ -84,7 +84,7 @@
       <view class="dish-image-wrapper">
         <image 
           class="dish-image" 
-          src="{{item.photoUrl || '/assets/default-dish.jpg'}}" 
+          src="{{item.photoUrl || 'https://placehold.co/400x400/F2F2F7/8E8E93?text=Dish'}}" 
           mode="aspectFill"
           lazy-load="{{true}}"
         ></image>
